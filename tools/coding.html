@@ -5,25 +5,33 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>开放题自动编码器</title>
 <link rel="stylesheet" href="assets/style.css">
+<style>.langbtn{margin-left:14px;background:transparent;border:1.5px solid var(--zju-3,#4b7fc0);color:var(--zju);font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;cursor:pointer;line-height:1}.langbtn:hover{background:var(--zju);color:#fff}</style>
 </head>
 <body>
 <nav class="nav"><div class="container">
-  <span class="brand"><span class="dot"></span>开放题自动编码器</span>
+  <span class="brand"><span class="dot"></span><span data-i18n="brand">开放题自动编码器</span></span>
   <span class="spacer"></span>
-  <a class="navlink" href="index.html">← 工具集</a>
+  <a class="navlink" href="index.html" data-i18n="back">← 工具集</a>
+  <button id="langBtn" class="langbtn" type="button" aria-label="切换到英文 / Switch to English">EN</button>
 </div></nav>
 <div class="tool-head"><div class="container">
-  <h1>🏷️ 开放题自动编码器 <span class="skeleton-badge">骨架版</span></h1>
-  <p>方法：内容分析(Krippendorff) · 主题分析六步(Braun&Clarke) · 三级编码 · 编码者间信度 κ/α（见《开放题自动编码.docx》）</p>
+  <h1>🏷️ <span data-i18n="th">开放题自动编码器</span> <span class="skeleton-badge" data-i18n="badge">骨架版</span></h1>
+  <p data-i18n="sub">方法：内容分析(Krippendorff) · 主题分析六步(Braun&Clarke) · 三级编码 · 编码者间信度 κ/α（见《开放题自动编码.docx》）</p>
 </div></div>
 <main class="container">
-  <div class="callout warn"><b>定位：</b>“AI 辅助的半自动编码 + 人工复核”。编码的科学性依赖编码者间信度，人不可缺位。</div>
+  <div class="callout warn" data-i18n="pos"><b>定位：</b>“AI 辅助的半自动编码 + 人工复核”。编码的科学性依赖编码者间信度，人不可缺位。</div>
   <div id="app"></div>
 </main>
-<footer><div class="container">© 陈颖妍 · 骨架代码 · κ 计算已内置可用</div></footer>
+<footer><div class="container" data-i18n="foot">© 陈颖妍 · 骨架代码 · κ 计算已内置可用</div></footer>
 
 <script src="assets/wizard.js"></script>
 <script>
+var T = {
+  whole:{zh:'整条回答',en:'Whole response'}, sentence:{zh:'句子',en:'Sentence'}, meaning:{zh:'意义单元',en:'Meaning unit'}
+};
+function o(v){ return {v:v, zh:T[v].zh, en:T[v].en}; }
+function lbl(v,lang){ return T[v] ? (T[v][lang]||T[v].zh) : v; }
+
 /* 真实 Cohen's κ：两列（每行一个编码）逐行比对 */
 function cohenKappa(a,b){
   a=(a||'').split('\n').map(function(x){return x.trim();});
@@ -39,43 +47,57 @@ function cohenKappa(a,b){
   return {N:N, po:po, kappa:kappa};
 }
 var cfg={ key:'coding', apiBase:'https://yingyan-chen-ai-portfolio.vercel.app', steps:[
-  { title:'导入答案', intro:'第 1 步：粘贴开放题答案，每行一条（=一个分析单元）。', fields:[
-     {name:'answers', label:'开放题答案（每行一条）', type:'lines', placeholder:'加载太慢了\n找不到入口\n价格有点贵\n界面看不懂',
-        check:function(v){ if(!v)return null; var n=v.split('\n').filter(function(x){return x.trim();}).length; return {level:'ok',msg:'已载入 '+n+' 条待编码单元。'}; }}
+  { title:{zh:'导入答案',en:'Import answers'}, intro:{zh:'第 1 步：粘贴开放题答案，每行一条（=一个分析单元）。',en:'Step 1: paste open-ended answers, one per line (= one analysis unit).'}, fields:[
+     {name:'answers', label:{zh:'开放题答案（每行一条）',en:'Open-ended answers (one per line)'}, type:'lines', placeholder:{zh:'加载太慢了\n找不到入口\n价格有点贵\n界面看不懂',en:'Too slow to load\nCan’t find the entry point\nA bit pricey\nThe UI is confusing'},
+        check:function(v){ if(!v)return null; var n=v.split('\n').filter(function(x){return x.trim();}).length; return {level:'ok',msg:{zh:'已载入 '+n+' 条待编码单元。',en:'Loaded '+n+' units to code.'}}; }}
   ]},
-  { title:'研究问题 & 单元', intro:'第 2 步：明确要回答什么、分析单元粒度。', fields:[
-     {name:'rq', label:'研究问题', type:'text', placeholder:'用户不满意的主要原因有哪些？'},
-     {name:'unit', label:'分析单元', type:'radio', options:['整条回答','句子','意义单元']}
+  { title:{zh:'研究问题 & 单元',en:'Question & unit'}, intro:{zh:'第 2 步：明确要回答什么、分析单元粒度。',en:'Step 2: clarify what you want to answer and the granularity of the analysis unit.'}, fields:[
+     {name:'rq', label:{zh:'研究问题',en:'Research question'}, type:'text', placeholder:{zh:'用户不满意的主要原因有哪些？',en:'What are the main reasons users are dissatisfied?'}},
+     {name:'unit', label:{zh:'分析单元',en:'Analysis unit'}, type:'radio', options:[o('whole'),o('sentence'),o('meaning')]}
   ]},
-  { title:'归纳类目（编码簿）', intro:'第 3 步：定义类目。可先人工，AI（配置 apiBase 后）读样本给候选类目。每行：类目名 | 定义 | 例句。', fields:[
-     {name:'codebook', label:'编码簿', type:'lines', placeholder:'性能 | 加载/卡顿相关 | “加载太慢了”\n易用性 | 找不到/看不懂 | “找不到入口”\n价格 | 费用相关 | “价格有点贵”',
-        check:function(v){ if(!v)return null; return {level:'tip',msg:'原则：类目互斥且穷尽(MECE)；保留“其他/无法归类”。'}; }},
-     {name:'aihint', type:'static', html:'<div class="callout">（骨架占位）配置 apiBase 后，可点“AI 归纳候选类目”自动读全部答案生成编码簿草稿，再由你增删改。</div>'}
+  { title:{zh:'归纳类目（编码簿）',en:'Induce categories (codebook)'}, intro:{zh:'第 3 步：定义类目。可先人工，AI（配置 apiBase 后）读样本给候选类目。每行：类目名 | 定义 | 例句。',en:'Step 3: define categories. Start manually, or let AI (once apiBase is set) read samples and suggest candidates. Per line: category | definition | example.'}, fields:[
+     {name:'codebook', label:{zh:'编码簿',en:'Codebook'}, type:'lines', placeholder:{zh:'性能 | 加载/卡顿相关 | “加载太慢了”\n易用性 | 找不到/看不懂 | “找不到入口”\n价格 | 费用相关 | “价格有点贵”',en:'Performance | loading/lag related | "Too slow to load"\nUsability | can’t find/understand | "Can’t find the entry point"\nPrice | cost related | "A bit pricey"'},
+        check:function(v){ if(!v)return null; return {level:'tip',msg:{zh:'原则：类目互斥且穷尽(MECE)；保留“其他/无法归类”。',en:'Principle: categories mutually exclusive & exhaustive (MECE); keep an "Other / uncodable".'}}; }},
+     {name:'aihint', type:'static', html:{zh:'<div class="callout">（骨架占位）配置 apiBase 后，可点“AI 归纳候选类目”自动读全部答案生成编码簿草稿，再由你增删改。</div>',en:'<div class="callout">(skeleton placeholder) Once apiBase is set, "AI-induce candidate categories" reads all answers and drafts a codebook for you to edit.</div>'}}
   ]},
-  { title:'逐条编码', intro:'第 4 步：人机协同。AI 给建议编码+置信度，你逐条复核。此处骨架用“编码者 A”手工编码演示。', fields:[
-     {name:'coderA', label:'编码者 A：给每条答案编码（每行一个类目，顺序对应答案）', type:'lines', placeholder:'性能\n易用性\n价格\n易用性'}
+  { title:{zh:'逐条编码',en:'Code item by item'}, intro:{zh:'第 4 步：人机协同。AI 给建议编码+置信度，你逐条复核。此处骨架用“编码者 A”手工编码演示。',en:'Step 4: human–AI collaboration. AI suggests codes + confidence; you review each. This skeleton demos manual coding by "Coder A".'}, fields:[
+     {name:'coderA', label:{zh:'编码者 A：给每条答案编码（每行一个类目，顺序对应答案）',en:'Coder A: code each answer (one category per line, aligned to answers)'}, type:'lines', placeholder:{zh:'性能\n易用性\n价格\n易用性',en:'Performance\nUsability\nPrice\nUsability'}}
   ]},
-  { title:'双编码与信度 κ', intro:'第 5 步：第二位编码者（或 AI 二次）独立编码，计算 Cohen’s κ。', fields:[
-     {name:'coderB', label:'编码者 B：独立编码（每行一个类目）', type:'lines', placeholder:'性能\n易用性\n价格\n性能',
-        check:function(v,s){ var r=cohenKappa(s.coderA,v); if(!r) return {level:'tip',msg:'两列各需 ≥2 个对应编码才能算 κ。'};
+  { title:{zh:'双编码与信度 κ',en:'Double-coding & κ reliability'}, intro:{zh:'第 5 步：第二位编码者（或 AI 二次）独立编码，计算 Cohen’s κ。',en:'Step 5: a second coder (or AI second pass) codes independently; compute Cohen’s κ.'}, fields:[
+     {name:'coderB', label:{zh:'编码者 B：独立编码（每行一个类目）',en:'Coder B: independent coding (one category per line)'}, type:'lines', placeholder:{zh:'性能\n易用性\n价格\n性能',en:'Performance\nUsability\nPrice\nPerformance'},
+        check:function(v,s){ var r=cohenKappa(s.coderA,v); if(!r) return {level:'tip',msg:{zh:'两列各需 ≥2 个对应编码才能算 κ。',en:'Each column needs ≥2 matching codes to compute κ.'}};
           var lvl=r.kappa>=0.8?'ok':(r.kappa>=0.6?'tip':'warn');
-          return {level:lvl,msg:'N='+r.N+'，观察一致 '+(r.po*100).toFixed(0)+'%，Cohen’s κ='+r.kappa.toFixed(2)+'（≥0.8 良好，0.6–0.8 可接受，<0.6 需讨论修订编码簿重编）。'}; }}
+          return {level:lvl,msg:{zh:'N='+r.N+'，观察一致 '+(r.po*100).toFixed(0)+'%，Cohen’s κ='+r.kappa.toFixed(2)+'（≥0.8 良好，0.6–0.8 可接受，<0.6 需讨论修订编码簿重编）。',en:'N='+r.N+', observed agreement '+(r.po*100).toFixed(0)+'%, Cohen’s κ='+r.kappa.toFixed(2)+' (≥0.8 good, 0.6–0.8 acceptable, <0.6 discuss & revise the codebook, then recode).'}}; }}
   ]},
-  { title:'导出', intro:'第 6 步：导出编码结果 + 编码簿 + 频次。', fields:[
-     {name:'_x', type:'static', html:'<div class="callout">右侧预览含编码簿与信度小结，点“导出 .md”。完整版还可导出逐条编码 CSV 与类目频次。</div>'}
+  { title:{zh:'导出',en:'Export'}, intro:{zh:'第 6 步：导出编码结果 + 编码簿 + 频次。',en:'Step 6: export coding results + codebook + frequencies.'}, fields:[
+     {name:'_x', type:'static', html:{zh:'<div class="callout">右侧预览含编码簿与信度小结，点“导出 .md”。完整版还可导出逐条编码 CSV 与类目频次。</div>',en:'<div class="callout">The preview on the right includes the codebook and a reliability summary; click "Export .md". The full version also exports per-item coding CSV and category frequencies.</div>'}}
   ]}
 ],
-buildPreview:function(s){
-  var o=['# 开放题编码结果（草稿）',''];
-  if(s.rq)o.push('**研究问题**：'+s.rq); if(s.unit)o.push('**分析单元**：'+s.unit); o.push('');
-  if(s.codebook){ o.push('## 编码簿'); o.push('| 类目 | 定义 | 例句 |','|---|---|---|'); s.codebook.split('\n').forEach(function(x){ if(x.trim()){ var p=x.split('|'); o.push('| '+((p[0]||'').trim())+' | '+((p[1]||'').trim())+' | '+((p[2]||'').trim())+' |'); } }); o.push(''); }
+buildPreview:function(s,lang){
+  function P(zh,en){ return lang==='en'?en:zh; }
+  var C = lang==='en'?': ':'：';
+  var o=['# '+P('开放题编码结果（草稿）','Open-ended coding results (draft)'),''];
+  if(s.rq)o.push('**'+P('研究问题','Research question')+'**'+C+s.rq); if(s.unit)o.push('**'+P('分析单元','Analysis unit')+'**'+C+lbl(s.unit,lang)); o.push('');
+  if(s.codebook){ o.push('## '+P('编码簿','Codebook')); o.push('| '+P('类目','Category')+' | '+P('定义','Definition')+' | '+P('例句','Example')+' |','|---|---|---|'); s.codebook.split('\n').forEach(function(x){ if(x.trim()){ var p=x.split('|'); o.push('| '+((p[0]||'').trim())+' | '+((p[1]||'').trim())+' | '+((p[2]||'').trim())+' |'); } }); o.push(''); }
   var r=cohenKappa(s.coderA,s.coderB);
-  if(r){ o.push('## 编码者间信度'); o.push('- 样本 N='+r.N+'，观察一致率 '+(r.po*100).toFixed(0)+'%'); o.push('- **Cohen’s κ = '+r.kappa.toFixed(2)+'**'+(r.kappa<0.6?'（偏低：建议讨论、修订编码簿后重编）':'')); o.push(''); }
-  // 频次（以编码者A为准）
-  if(s.coderA){ var f={}; s.coderA.split('\n').forEach(function(c){c=c.trim();if(c)f[c]=(f[c]||0)+1;}); var ks=Object.keys(f); if(ks.length){ o.push('## 类目频次（编码者A）'); ks.forEach(function(k){o.push('- '+k+'：'+f[k]);}); } }
+  if(r){ o.push('## '+P('编码者间信度','Inter-coder reliability')); o.push('- '+P('样本 N=','Sample N=')+r.N+P('，观察一致率 ',', observed agreement ')+(r.po*100).toFixed(0)+'%'); o.push('- **Cohen’s κ = '+r.kappa.toFixed(2)+'**'+(r.kappa<0.6?P('（偏低：建议讨论、修订编码簿后重编）',' (low: discuss, revise the codebook, then recode)'):'')); o.push(''); }
+  if(s.coderA){ var f={}; s.coderA.split('\n').forEach(function(c){c=c.trim();if(c)f[c]=(f[c]||0)+1;}); var ks=Object.keys(f); if(ks.length){ o.push('## '+P('类目频次（编码者A）','Category frequency (Coder A)')); ks.forEach(function(k){o.push('- '+k+C+f[k]);}); } }
   return o.join('\n');
 }};
 new Wizard(cfg).mount('#app');
 </script>
+<script>
+window.I18N_EN_TITLE = "Open-ended Response Coder";
+window.I18N_EN = {
+  brand: "Open-ended Response Coder",
+  back: "← Tools",
+  th: "Open-ended Response Coder",
+  badge: "skeleton",
+  sub: "Method: content analysis (Krippendorff) · six-step thematic analysis (Braun & Clarke) · three-level coding · inter-coder reliability κ/α.",
+  pos: `<b>Positioning:</b> "AI-assisted semi-automatic coding + human review." Coding rigor depends on inter-coder reliability — the human stays in the loop.`,
+  foot: "© Yingyan Chen · skeleton build · κ computation built in and working"
+};
+</script>
+<script src="assets/i18n.js"></script>
 </body>
 </html>

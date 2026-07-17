@@ -5,18 +5,20 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>AI 小工具集 · 陈颖妍</title>
 <link rel="stylesheet" href="assets/style.css">
+<style>.langbtn{margin-left:14px;background:transparent;border:1.5px solid var(--zju-3,#4b7fc0);color:var(--zju);font-size:13px;font-weight:700;padding:4px 12px;border-radius:999px;cursor:pointer;line-height:1}.langbtn:hover{background:var(--zju);color:#fff}</style>
 </head>
 <body>
 <nav class="nav"><div class="container">
-  <span class="brand"><span class="dot"></span>陈颖妍 · AI 小工具集</span>
+  <span class="brand"><span class="dot"></span><span data-i18n="brand">陈颖妍 · AI 小工具集</span></span>
   <span class="spacer"></span>
-  <a class="navlink" href="../index.html">← 返回作品集</a>
+  <a class="navlink" href="../index.html" data-i18n="back">← 返回作品集</a>
+  <button id="langBtn" class="langbtn" type="button" aria-label="切换到英文 / Switch to English">EN</button>
 </div></nav>
 
 <header class="hero"><div class="container">
-  <span class="kicker">用研 × 心理学 × AI · 作品集 Tools 区</span>
-  <h1>把研究方法，做成人人可用的小工具</h1>
-  <p>4 个网页工具，用分步向导带零基础用户产出规范的问卷/访谈提纲、PRD、开放题编码与 SQL 分析。每个工具都由对应的方法论设计文档支撑（见 CV_web 目录）。</p>
+  <span class="kicker" data-i18n="kicker">用研 × 心理学 × AI · 作品集 Tools 区</span>
+  <h1 data-i18n="h1">把研究方法，做成人人可用的小工具</h1>
+  <p data-i18n="lead">4 个网页工具，用分步向导带零基础用户产出规范的问卷/访谈提纲、PRD、开放题编码与 SQL 分析。每个工具都由对应的方法论设计文档支撑（见 CV_web 目录）。</p>
 </div></header>
 
 <main class="container">
@@ -24,43 +26,70 @@
 
     <a class="card" href="survey.html">
       <div class="ico">📋</div>
-      <h3>访谈提纲 & 问卷生成器</h3>
-      <p>分步引导：明确问题 → 选对象与体量 → 选提纲/问卷 → 逐题生成，实时校验诱导性、双重命题、选项互斥。</p>
-      <div class="tags"><span class="tag">问卷设计</span><span class="tag">用户访谈</span><span class="tag">表述校验</span></div>
-      <span class="btn sm">开始使用 →</span>
+      <h3 data-i18n="c1t">访谈提纲 & 问卷生成器</h3>
+      <p data-i18n="c1d">分步引导：明确问题 → 选对象与体量 → 选提纲/问卷 → 逐题生成，实时校验诱导性、双重命题、选项互斥。</p>
+      <div class="tags" data-i18n="c1g"><span class="tag">问卷设计</span><span class="tag">用户访谈</span><span class="tag">表述校验</span></div>
+      <span class="btn sm" data-i18n="start">开始使用 →</span>
     </a>
 
     <a class="card" href="prd.html">
       <div class="ico">📄</div>
-      <h3>PRD 生成器</h3>
-      <p>按 9 章 PRD 框架逐步引导填写，实时提示“目标要可量化 / 补验收标准 / 加边界异常”，一键导出。</p>
-      <div class="tags"><span class="tag">产品需求</span><span class="tag">大厂框架</span><span class="tag">自检清单</span></div>
-      <span class="btn sm">开始使用 →</span>
+      <h3 data-i18n="c2t">PRD 生成器</h3>
+      <p data-i18n="c2d">按 9 章 PRD 框架逐步引导填写，实时提示“目标要可量化 / 补验收标准 / 加边界异常”，一键导出。</p>
+      <div class="tags" data-i18n="c2g"><span class="tag">产品需求</span><span class="tag">大厂框架</span><span class="tag">自检清单</span></div>
+      <span class="btn sm" data-i18n="start">开始使用 →</span>
     </a>
 
     <a class="card" href="coding.html">
       <div class="ico">🏷️</div>
-      <h3>开放题自动编码器</h3>
-      <p>AI 辅助归纳类目 + 生成编码簿 + 逐条编码 + 人工复核 + κ/α 信度。半自动、人不缺位。</p>
-      <div class="tags"><span class="tag">内容分析</span><span class="tag">主题编码</span><span class="tag">编码者信度</span></div>
-      <span class="btn sm">开始使用 →</span>
+      <h3 data-i18n="c3t">开放题自动编码器</h3>
+      <p data-i18n="c3d">AI 辅助归纳类目 + 生成编码簿 + 逐条编码 + 人工复核 + κ/α 信度。半自动、人不缺位。</p>
+      <div class="tags" data-i18n="c3g"><span class="tag">内容分析</span><span class="tag">主题编码</span><span class="tag">编码者信度</span></div>
+      <span class="btn sm" data-i18n="start">开始使用 →</span>
     </a>
 
     <a class="card" href="sql.html">
       <div class="ico">🧮</div>
-      <h3>SQL 妙妙小工具</h3>
-      <p>导入 CSV → 描述问题 → 生成带注释 SQL → 校验你的写法 → 浏览器内执行（sql.js）出结果。</p>
-      <div class="tags"><span class="tag">SQL 生成</span><span class="tag">语句校验</span><span class="tag">浏览器执行</span></div>
-      <span class="btn sm">开始使用 →</span>
+      <h3 data-i18n="c4t">SQL 妙妙小工具</h3>
+      <p data-i18n="c4d">导入 CSV → 描述问题 → 生成带注释 SQL → 校验你的写法 → 浏览器内执行（sql.js）出结果。</p>
+      <div class="tags" data-i18n="c4g"><span class="tag">SQL 生成</span><span class="tag">语句校验</span><span class="tag">浏览器执行</span></div>
+      <span class="btn sm" data-i18n="start">开始使用 →</span>
     </a>
 
   </div>
 
-  <div class="callout">
+  <div class="callout" data-i18n="note">
     <b>说明：</b>本页面为<span class="skeleton-badge">骨架版</span>——分步流程、样式、导出可用；需要大模型的步骤（AI 生成/润色/归类）为占位，部署时在各工具的 <code>apiBase</code> 填入 serverless 接口即可启用（见 <code>tools/api/README.md</code>）。
   </div>
 </main>
 
-<footer><div class="container">© 陈颖妍 · 用研作品集 · 浙大蓝主题 · 骨架代码 2026</div></footer>
+<footer><div class="container" data-i18n="foot">© 陈颖妍 · 用研作品集 · 浙大蓝主题 · 骨架代码 2026</div></footer>
+
+<script>
+window.I18N_EN_TITLE = "AI Tools · Yingyan Chen";
+window.I18N_EN = {
+  brand: "Yingyan Chen · AI Tools",
+  back: "← Back to portfolio",
+  kicker: "UX Research × Psychology × AI · Portfolio Tools",
+  h1: "Turning research methods into tools anyone can use",
+  lead: "Four web tools that walk absolute beginners, step by step, to rigorous surveys/interview guides, PRDs, open-ended coding, and SQL analysis. Each is backed by its own methodology design document (see the CV_web folder).",
+  c1t: "Interview Guide & Survey Generator",
+  c1d: "Step-by-step: define the question → pick audience & scale → choose guide/survey → generate item by item, with live checks for leading questions, double-barreled items, and option overlap.",
+  c1g: `<span class="tag">Survey Design</span><span class="tag">User Interviews</span><span class="tag">Wording Checks</span>`,
+  c2t: "PRD Generator",
+  c2d: "A guided 9-chapter PRD framework with live prompts (“make goals measurable / add acceptance criteria / cover edge cases”) and one-click export.",
+  c2g: `<span class="tag">Product Requirements</span><span class="tag">Big-tech Framework</span><span class="tag">Checklist</span>`,
+  c3t: "Open-ended Response Coder",
+  c3d: "AI-assisted category induction + codebook + item-by-item coding + human review + κ/α reliability. Semi-automatic — the human stays in the loop.",
+  c3g: `<span class="tag">Content Analysis</span><span class="tag">Thematic Coding</span><span class="tag">Inter-coder Reliability</span>`,
+  c4t: "SQL Handy Tool",
+  c4d: "Import CSV → describe the question → generate annotated SQL → validate your version → run it in the browser (sql.js) for results.",
+  c4g: `<span class="tag">SQL Generation</span><span class="tag">Query Validation</span><span class="tag">In-browser Execution</span>`,
+  start: "Open →",
+  note: `<b>Note:</b> this page is a <span class="skeleton-badge">skeleton build</span> — the step-by-step flow, styling, and export all work; the steps that need a large model (AI generation/polish/categorization) are placeholders, enabled by filling each tool's <code>apiBase</code> with a serverless endpoint on deploy (see <code>tools/api/README.md</code>).`,
+  foot: "© 2026 Yingyan Chen · UX Research Portfolio · ZJU-blue theme · skeleton build"
+};
+</script>
+<script src="assets/i18n.js"></script>
 </body>
 </html>
