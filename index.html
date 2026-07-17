@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>陈颖妍 · 用户研究 / 人因研究 作品集</title>
+<meta name="description" content="陈颖妍（浙江大学心理学博士）作品集：VR 空间导航研究案例 × AI 用研小工具。定量+定性+认知建模+多模态生理信号。">
+<link rel="stylesheet" href="tools/assets/style.css">
+<style>
+/* ===== 作品集主站专属样式（在共享设计系统之上） ===== */
+section{padding:56px 0}
+section h2.sec{font-size:24px;color:var(--zju);display:flex;align-items:center;gap:12px;margin-bottom:6px}
+section h2.sec::after{content:"";flex:1;height:2px;background:linear-gradient(90deg,var(--line),transparent)}
+.sec-sub{color:var(--muted);font-size:14px;margin:0 0 26px}
+/* Hero 加强版 */
+.hero.big{padding:72px 0 78px}
+.hero.big h1{font-size:38px;letter-spacing:.5px}
+.hero .sub{font-size:17px;color:#eaf2ff;margin:6px 0 2px;font-weight:600}
+.hero .meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hero .meta .chip{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);color:#eaf2ff;font-size:13px;padding:5px 13px;border-radius:999px}
+.hero .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn.onblue{background:#fff;color:var(--zju)}
+.btn.onblue:hover{background:#dce8fb}
+.btn.line{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.6)}
+.btn.line:hover{background:rgba(255,255,255,.12)}
+.avatar{width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.5);display:grid;place-items:center;font-size:34px;font-weight:700;color:#fff;margin-bottom:18px}
+/* About */
+.about-grid{display:grid;grid-template-columns:1.25fr .75fr;gap:22px}
+.edu{list-style:none;margin:0;padding:0}
+.edu li{position:relative;padding:0 0 18px 22px;border-left:2px solid var(--line);margin-left:6px}
+.edu li:last-child{padding-bottom:0}
+.edu li::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--zju-3);border:2px solid #fff;box-shadow:0 0 0 2px var(--zju-3)}
+.edu b{color:var(--zju)}
+.edu .t{color:var(--muted);font-size:13px}
+.pub{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:12px;background:#fcfdff}
+.pub .j{display:inline-block;background:#eef4fc;color:var(--zju-2);font-size:12px;padding:2px 10px;border-radius:999px;margin-bottom:6px;font-weight:600}
+.pub p{margin:0;font-size:13.5px}
+.pub a{font-weight:600}
+/* Projects 案例卡 */
+.case{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin-bottom:22px;overflow:hidden}
+.case>summary{list-style:none;cursor:pointer;padding:22px;display:flex;gap:16px;align-items:flex-start}
+.case>summary::-webkit-details-marker{display:none}
+.case .num{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:var(--zju);color:#fff;display:grid;place-items:center;font-size:20px;font-weight:700}
+.case h3{margin:0 0 4px;color:var(--zju);font-size:18px}
+.case .one{color:var(--ink);font-size:14.5px;margin:0 0 8px}
+.case .role{font-size:12.5px;color:var(--muted)}
+.case .arrow{margin-left:auto;color:var(--zju-3);font-size:13px;flex:0 0 auto;padding-top:4px;white-space:nowrap}
+.case[open] .arrow .cl{display:inline}.case .arrow .cl{display:none}
+.case[open] .arrow .op{display:none}
+.case .detail{border-top:1px solid var(--line);padding:20px 22px;display:grid;grid-template-columns:1fr 1fr;gap:14px 24px}
+.case .blk h4{margin:0 0 6px;font-size:13.5px;color:var(--zju-2)}
+.case .blk h4 .k{display:inline-block;width:20px;height:20px;border-radius:50%;background:#eef4fc;color:var(--zju);text-align:center;line-height:20px;font-size:12px;margin-right:6px}
+.case .blk p,.case .blk ul{margin:0;font-size:13.5px;color:var(--ink)}
+.case .blk ul{padding-left:18px}
+.case .blk.wide{grid-column:1/-1}
+.viz{display:flex;gap:12px;flex-wrap:wrap}
+.viz .ph{flex:1 1 220px;min-height:120px;border:1.5px dashed var(--line);border-radius:10px;display:grid;place-items:center;color:var(--muted);font-size:12.5px;background:#f8fafd;text-align:center;padding:10px}
+/* 响应式 */
+@media(max-width:860px){
+  .about-grid{grid-template-columns:1fr}
+  .case .detail{grid-template-columns:1fr}
+  .hero.big h1{font-size:28px}
+  .nav .navlinks{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav"><div class="container">
+  <span class="brand"><span class="dot"></span>陈颖妍 · Yingyan Chen</span>
+  <span class="spacer"></span>
+  <span class="navlinks">
+    <a class="navlink" href="#about">关于我</a>
+    <a class="navlink" href="#projects">项目案例</a>
+    <a class="navlink" href="#tools">AI 小工具</a>
+  </span>
+</div></nav>
+
+<!-- ============ Hero ============ -->
+<header class="hero big"><div class="container">
+  <div class="avatar">陈</div>
+  <span class="kicker">用户研究 / 用户体验研究（UXR）/ 人因研究</span>
+  <h1>把「人怎么想、怎么做」研究明白，<br>再变成产品能用的答案</h1>
+  <p class="sub">心理学博士 · 定量 + 定性 + 认知建模 + VR/多模态生理信号</p>
+  <div class="meta">
+    <span class="chip">浙江大学 心理学博士（2027 届）</span>
+    <span class="chip">范德堡大学 访问学者</span>
+    <span class="chip">中科院一区 一作 ×1 · 二作 ×1</span>
+    <span class="chip">雅思 7</span>
+  </div>
+  <div class="cta">
+    <a class="btn onblue" href="assets/陈颖妍_简历.pdf" download>⬇ 下载简历（PDF）</a>
+    <a class="btn line" href="mailto:crischen0627@gmail.com">✉ crischen0627@gmail.com</a>
+    <a class="btn line" href="#" title="待补充">in · 领英（待补充）</a>
+    <a class="btn line" href="#" title="待补充">GitHub（待补充）</a>
+  </div>
+</div></header>
+
+<!-- ============ About ============ -->
+<section id="about"><div class="container">
+  <h2 class="sec">关于我</h2>
+  <p class="sec-sub">研究主线：三维空间导航的认知机制 —— 人在真实/虚拟空间里如何利用不完整的信息做判断。</p>
+  <div class="about-grid">
+    <div class="panel">
+      <h2 style="font-size:16px">教育与研究背景</h2>
+      <ul class="edu">
+        <li><b>浙江大学 · 心理与行为科学系</b> · 心理学 博士<div class="t">2022.09 – 2027.06 · 高级心理统计 / 实验认知心理学 / 认知工效学 / 磁共振数据分析 / VR 心理学研究方法 · 优秀研究生、一等学业奖助金</div></li>
+        <li><b>范德堡大学 Vanderbilt University</b> · 心理学 访问学者<div class="t">2025.10 – 2026.10 · 美国·纳什维尔</div></li>
+        <li><b>厦门大学 · 电子科学与技术学院</b> · 电子信息科学与技术 学士<div class="t">2018.09 – 2022.06 · GPA 3.64/4 · 专业排名 5/51 · 保研</div></li>
+      </ul>
+      <div class="tags" style="margin-top:16px">
+        <span class="tag">实验设计</span><span class="tag">问卷与信效度</span><span class="tag">用户访谈</span><span class="tag">认知建模</span><span class="tag">贝叶斯因果推断</span><span class="tag">EEG/眼动/皮电/fMRI</span><span class="tag">R / Python / MySQL</span><span class="tag">Unity / VR</span><span class="tag">Tableau / Figma</span>
+      </div>
+    </div>
+    <div>
+      <div class="pub">
+        <span class="j">J. Experimental Psychology: General · 2026 · 一作 · 中科院一区</span>
+        <p>Chen, Y., Newman, P., Hicks, S., et al. A two-dimensional framework for prior knowledge in goal-directed navigation.<br>
+        <a href="https://doi.org/10.1037/xge0001950" target="_blank" rel="noopener">doi.org/10.1037/xge0001950 →</a></p>
+      </div>
+      <div class="pub">
+        <span class="j">Cognitive Psychology · 2025 · 二作 · 中科院一区</span>
+        <p>Chen, X., Chen, Y., &amp; McNamara, T. P. Processing spatial cue conflict in navigation: Distance estimation. 158, 101734.<br>
+        <a href="https://doi.org/10.1016/j.cogpsych.2025.101734" target="_blank" rel="noopener">doi.org/10.1016/j.cogpsych.2025.101734 →</a></p>
+      </div>
+      <div class="callout">为什么心理学博士做用研？我的日常就是：提出关于「人」的问题 → 设计实验/访谈拿到证据 → 用模型解释行为 → 给出可行动的结论。换到产品语境，问题从「人如何导航」变成「用户为何流失」，方法完全同源。</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- ============ Projects ============ -->
+<section id="projects" style="background:#fff"><div class="container">
+  <h2 class="sec">项目案例 · Case Studies</h2>
+  <p class="sec-sub">3 段 VR 研究，按用研报告结构呈现：概述 → 背景 → 角色 → 方法 → 发现 → 洞察 → 可视化。点击卡片展开。</p>
+
+  <!-- 案例 1：先验认知机制（核心案例，文案由 Chen 2026 JEPG 论文支撑） -->
+  <details class="case" open>
+    <summary>
+      <span class="num">01</span>
+      <span>
+        <h3>空间导航中先验知识的认知机制</h3>
+        <p class="one">当眼前的信息不可靠时，人会调用「经验里的地图」补位——我们用 422 人的 VR 实验，第一次把这张地图拆成四种，量化了每一种何时被启用、被信任多少。</p>
+        <span class="role">第一作者 · 核心执行负责人 · 2024.09 – 2025.10 · 浙大 × 范德堡 × 爱荷华州立三校合作 · 校级科研训练立项获优 · JEP: General（2026，一作）</span>
+      </span>
+      <span class="arrow"><span class="op">展开详情 ▾</span><span class="cl">收起 ▴</span></span>
+    </summary>
+    <div class="detail" id="case1-detail">
+      <div class="blk wide"><h4><span class="k">①</span>一句话概述</h4><p>导航时我们从不只依赖眼前所见——过去的经验（先验知识）持续影响位置判断。但"经验"到底是什么、何时起作用，此前没人拆开回答过。本研究提出二维分类框架（参照系 × 时间尺度 = 四种先验），并在同一任务中同时量化它们。</p></div>
+      <div class="blk"><h4><span class="k">②</span>背景与目标</h4><p>已有研究把先验当作整体、或只做单维比较，留下三问：先验影不影响当下导航？在接近真实世界的多维视觉空间还成立吗？多种先验会同时起作用吗？我们逐一作答。</p></div>
+      <div class="blk"><h4><span class="k">③</span>我的角色</h4><p>第一作者：数据管理、统计分析、实验实施、方法、项目管理、软件、可视化与论文初稿（署名贡献照实）；概念框架与经费由三校教授团队共同支持。成果先发 Psychonomic Society 2025 年会海报。</p></div>
+      <div class="blk"><h4><span class="k">④</span>方法与规模</h4><p>水迷宫式目标导向导航任务（桌面 VR；项目另自建 Unity3D + Cyberith 沉浸式环境用于系列研究）；操纵目标分布紧凑度与环境视觉丰富度；<b>4 组实验、422 名被试</b>（中美跨文化、线上+实验室）；中央趋势效应 + 双维回归分离四种先验的独立贡献；数据代码 OSF 开放。</p></div>
+      <div class="blk"><h4><span class="k">⑤</span>关键发现</h4><ul>
+        <li>用户会把「历史目标的中心」当锚点：复现位置系统性偏向经验分布中心——即使没人告诉他们这个中心存在。</li>
+        <li>经验越可靠，越被信任：分布越紧凑，依赖越强——人脑按贝叶斯原则给「经验」与「眼前证据」动态分权。</li>
+        <li>多套经验并行起作用：环境中心长期先验 + 自我中心长期/近期先验同时影响行为；地标越丰富，用户越倚重稳定的环境参照系。</li>
+      </ul></div>
+      <div class="blk"><h4><span class="k">⑥</span>洞察与启示</h4><p><b>默认值设计</b>：高频稳定场景该把「历史行为中心」做成默认项，用户天然信任它；低频多变场景勿给错误默认。<b>地图/AR 导航</b>：多锚定显著地标，可把用户从易漂移的自我参照拉回稳定的环境参照。<b>VR/XR</b>：传送/重定位引入的空间偏差可预测、可补偿，而非噪声。</p></div>
+      <div class="blk wide"><h4><span class="k">⑦</span>可视化</h4>
+        <div class="viz"><div class="ph">VR 实验场景截图<br>（占位：待挂图）</div><div class="ph">先验二维框架 / 数据图<br>（占位：待挂图）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 案例 2：压力导航 -->
+  <details class="case">
+    <summary>
+      <span class="num">02</span>
+      <span>
+        <h3>压力状态下的空间导航策略与先验机制</h3>
+        <p class="one">用皮电/心电等生理信号客观测量压力下的真实反应，补足自我报告「言行不一」的盲区。</p>
+        <span class="role">负责人 · 2025.10 – 2026.10 · 问卷 + 行为实验 + 访谈 + 多模态生理信号 · 跨文化被试（进行中）</span>
+      </span>
+      <span class="arrow"><span class="op">展开详情 ▾</span><span class="cl">收起 ▴</span></span>
+    </summary>
+    <div class="detail">
+      <div class="blk wide"><h4><span class="k">①</span>一句话概述</h4><p>压力会改变人对信息的取舍——本研究用生理信号在人自己「说不清」的时候，客观读出压力如何改写导航策略。</p></div>
+      <div class="blk"><h4><span class="k">②</span>背景与目标</h4><p>高压场景（赶时间、陌生环境）下用户决策方式会变，但自我报告失真。目标：确定压力如何改变对先验/路标的依赖权重。</p></div>
+      <div class="blk"><h4><span class="k">③</span>我的角色</h4><p>负责人：研究设计、多模态信号采集方案、信号分析、认知建模与模型对比。</p></div>
+      <div class="blk"><h4><span class="k">④</span>方法与规模</h4><p>问卷 + VR 行为实验 + 用户访谈三角互证；皮电（EDA）/心电（ECG）多模态生理信号；跨文化被试（中美）。</p></div>
+      <div class="blk"><h4><span class="k">⑤</span>关键发现</h4><p>研究进行中——生理指标与行为策略的关联分析推进中，结果将持续更新。</p></div>
+      <div class="blk"><h4><span class="k">⑥</span>洞察与启示</h4><p>方法可直接迁移到可用性/体验测试：当用户「嘴上说没问题」时，生理信号能暴露真实的压力与负荷点。</p></div>
+      <div class="blk wide"><h4><span class="k">⑦</span>可视化</h4>
+        <div class="viz"><div class="ph">生理信号采集现场<br>（占位：待挂图）</div><div class="ph">压力-策略模型示意<br>（占位：待挂图）</div></div>
+      </div>
+    </div>
+  </details>
+
+  <!-- 案例 3：线索冲突 -->
+  <details class="case">
+    <summary>
+      <span class="num">03</span>
+      <span>
+        <h3>空间导航中线索冲突对距离估计的影响</h3>
+        <p class="one">当两个信息源打架时，大脑像贝叶斯法官一样断案——这项工作发表在 Cognitive Psychology（一区）。</p>
+        <span class="role">负责人 · 2022.09 – 2024.09 · Worldviz VR · 贝叶斯因果推断建模 · Cognitive Psychology（2025，二作）</span>
+      </span>
+      <span class="arrow"><span class="op">展开详情 ▾</span><span class="cl">收起 ▴</span></span>
+    </summary>
+    <div class="detail">
+      <div class="blk wide"><h4><span class="k">①</span>一句话概述</h4><p>视觉路标与自身运动感受不一致时，人如何估计走了多远？我们用模型比较找出了大脑整合冲突信息的规则。</p></div>
+      <div class="blk"><h4><span class="k">②</span>背景与目标</h4><p>现实与 VR 中信息源常常互相矛盾（视觉 vs 本体感觉）。目标：刻画冲突程度如何决定「整合」还是「取舍」。</p></div>
+      <div class="blk"><h4><span class="k">③</span>我的角色</h4><p>负责人：实验实施、导航模式分析、构建并对比贝叶斯因果推断等多种认知模型。</p></div>
+      <div class="blk"><h4><span class="k">④</span>方法与规模</h4><p>Worldviz VR 系统；导航行为范式；多模型定量比较（贝叶斯因果推断 vs 竞争模型）。</p></div>
+      <div class="blk"><h4><span class="k">⑤</span>关键发现</h4><ul><li>冲突信息的处理不是简单平均，而是随冲突大小在「整合/取舍」间切换（详见论文）。</li></ul></div>
+      <div class="blk"><h4><span class="k">⑥</span>洞察与启示</h4><p>对 VR/AR 产品：视觉与体感不一致会系统性扭曲用户的空间判断——晕动、错位交互的根源之一，设计时应控制冲突幅度。</p></div>
+      <div class="blk wide"><h4><span class="k">⑦</span>可视化</h4>
+        <div class="viz"><div class="ph">Worldviz 实验范式示意<br>（占位：待挂图）</div><div class="ph">模型比较结果图<br>（占位：待挂图）</div></div>
+      </div>
+    </div>
+  </details>
+</div></section>
+
+<!-- ============ Tools ============ -->
+<section id="tools"><div class="container">
+  <h2 class="sec">AI 小工具 · Tools</h2>
+  <p class="sec-sub">把研究方法做成人人可用的小工具——每个工具背后是一份方法论设计文档。当前为骨架版，AI 步骤待接入 API。</p>
+  <div class="grid">
+    <a class="card" href="tools/survey.html">
+      <div class="ico">📋</div><h3>访谈提纲 &amp; 问卷生成器</h3>
+      <p>分步引导产出规范问卷/提纲，实时校验诱导性、双重命题、双重否定。方法论：Schwarz、Tourangeau、Kvale。</p>
+      <div class="tags"><span class="tag">问卷设计</span><span class="tag">用户访谈</span></div>
+      <span class="btn sm">在线体验 →</span>
+    </a>
+    <a class="card" href="tools/prd.html">
+      <div class="ico">📄</div><h3>PRD 生成器</h3>
+      <p>9 章框架逐步引导 + 语言规范校验（目标可量化 / 验收标准 / 边界异常），风格层：通用/阿里/腾讯。</p>
+      <div class="tags"><span class="tag">产品需求</span><span class="tag">自检清单</span></div>
+      <span class="btn sm">在线体验 →</span>
+    </a>
+    <a class="card" href="tools/coding.html">
+      <div class="ico">🏷️</div><h3>开放题自动编码器</h3>
+      <p>AI 辅助归纳类目 + 人工复核 + 内置 Cohen&rsquo;s κ 信度计算。方法论：内容分析、主题分析六步。</p>
+      <div class="tags"><span class="tag">内容分析</span><span class="tag">κ 信度</span></div>
+      <span class="btn sm">在线体验 →</span>
+    </a>
+    <a class="card" href="tools/sql.html">
+      <div class="ico">🧮</div><h3>SQL 妙妙小工具</h3>
+      <p>导入 CSV → 生成/校验 SQL → 浏览器内真实执行（sql.js / SQLite WASM），结果一键导出。</p>
+      <div class="tags"><span class="tag">SQL</span><span class="tag">浏览器执行</span></div>
+      <span class="btn sm">在线体验 →</span>
+    </a>
+  </div>
+</div></section>
+
+<footer><div class="container">© 2026 陈颖妍 Yingyan Chen · 用户研究 / 人因研究 · 浙大蓝主题 · <a href="mailto:crischen0627@gmail.com">crischen0627@gmail.com</a></div></footer>
+
+</body>
+</html>

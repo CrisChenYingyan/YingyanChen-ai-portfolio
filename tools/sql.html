@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SQL 妙妙小工具</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="container">
+  <span class="brand"><span class="dot"></span>SQL 妙妙小工具</span>
+  <span class="spacer"></span>
+  <a class="navlink" href="index.html">← 工具集</a>
+</div></nav>
+<div class="tool-head"><div class="container">
+  <h1>🧮 SQL 妙妙小工具 <span class="skeleton-badge">骨架版</span></h1>
+  <p>导入 CSV → 描述问题 → 生成/校验 SQL → 浏览器内执行（sql.js / SQLite WASM）。见《SQL妙妙小工具.docx》</p>
+</div></div>
+
+<main class="container" style="padding-bottom:60px">
+
+  <div class="panel" style="margin-top:22px">
+    <h2>第 1 步 · 导入待处理文件（CSV）</h2>
+    <div class="intro">选择或粘贴 CSV，首行作为列名，导入为表 <code>data</code>。（骨架用简易解析：逗号分隔、UTF-8）</div>
+    <div class="field"><input type="file" id="csvfile" accept=".csv,.txt"></div>
+    <div class="field"><label>或直接粘贴 CSV</label>
+      <textarea id="csvtext" placeholder="user_id,city,amount,day&#10;1,杭州,120,2026-07-01&#10;2,深圳,80,2026-07-01&#10;1,杭州,200,2026-07-02"></textarea></div>
+    <button class="btn" id="btnLoad">导入建表</button>
+    <div class="msg" id="loadMsg"></div>
+  </div>
+
+  <div class="panel" style="margin-top:18px">
+    <h2>第 2 步 · 明确分析问题与输出</h2>
+    <div class="field"><label>用自然语言描述你要算什么</label>
+      <input type="text" id="question" placeholder="例：每个城市的总消费额，按从高到低排序"></div>
+    <div class="field"><label>输出文件名（导出结果时用）</label>
+      <input type="text" id="outname" placeholder="city_amount"></div>
+  </div>
+
+  <div class="panel" style="margin-top:18px">
+    <h2>第 3 / 4 步 · 生成 & 校验 SQL</h2>
+    <div class="callout">“AI 生成带注释 SQL / 校验你的写法”需大模型：配置 <code>API_BASE</code> 后自动启用（调用 <code>/api/sql-gen</code> 与 <code>/api/sql-check</code>，见 <code>tools/api/README.md</code>）。未配置时你可手写 SQL 并在第 5 步实跑校验。</div>
+    <div class="field"><label>SQL 语句（可手写；针对表 <code>data</code>）</label>
+      <textarea id="sql" style="min-height:120px;font-family:Consolas,monospace" placeholder="-- 每个城市总消费，降序&#10;SELECT city, SUM(amount) AS total&#10;FROM data&#10;GROUP BY city&#10;ORDER BY total DESC;"></textarea></div>
+    <button class="btn ghost" id="btnGen" disabled title="配置 API 后可用">✨ AI 生成 SQL</button>
+    <button class="btn ghost" id="btnCheck" disabled title="配置 API 后可用">🔍 AI 校验我的 SQL</button>
+    <div class="msg" id="aiMsg"></div>
+  </div>
+
+  <div class="panel" style="margin-top:18px">
+    <h2>第 5 步 · 浏览器内执行（sql.js）</h2>
+    <div id="sqlStatus" class="msg tip" style="display:block">正在加载 SQL 引擎（sql.js）…</div>
+    <button class="btn" id="btnRun" disabled>▶ 运行 SQL</button>
+    <button class="btn ghost" id="btnExport" disabled>导出结果 CSV</button>
+    <div class="msg" id="runMsg"></div>
+    <div id="result"></div>
+  </div>
+
+  <div class="callout warn" style="margin-top:18px"><b>降级预案：</b>若浏览器/网络无法加载 sql.js（WASM），本工具自动退回“仅生成 + 校验、可复制到本地执行”模式，并应在《网页作品集Todolist.docx》标记。</div>
+</main>
+<footer><div class="container">© 陈颖妍 · 骨架代码 · sql.js 在浏览器内运行 SQLite</div></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
+<script>
+var API_BASE=''; // 部署时填 serverless 地址（如 'https://xxx.vercel.app'）以启用 AI 生成/校验
+var SQL=null, db=null, lastResult=null, tableSchema='';
+var $=function(s){return document.querySelector(s);};
+
+// 加载 sql.js（WASM）
+if(window.initSqlJs){
+  initSqlJs({ locateFile:function(f){return 'https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/'+f;} })
+  .then(function(s){ SQL=s; $('#sqlStatus').className='msg ok'; $('#sqlStatus').textContent='SQL 引擎已就绪（sql.js / SQLite WASM）。'; })
+  .catch(function(e){ $('#sqlStatus').className='msg warn'; $('#sqlStatus').textContent='SQL 引擎加载失败（可能离线/被拦截）→ 降级为“仅生成+校验”，请复制 SQL 到本地执行。'; });
+} else {
+  $('#sqlStatus').className='msg warn'; $('#sqlStatus').textContent='未能加载 sql.js（离线？）→ 降级为“仅生成+校验”。';
+}
+
+// 简易 CSV 解析（骨架：逗号分隔，首行列名；不处理引号内逗号——完整版换 PapaParse）
+function parseCSV(text){
+  var lines=text.trim().split(/\r?\n/).filter(function(l){return l.trim();});
+  if(!lines.length) return null;
+  var head=lines[0].split(',').map(function(h){return h.trim().replace(/[^\w一-龥]/g,'_')||'col';});
+  var rows=lines.slice(1).map(function(l){return l.split(',');});
+  return {head:head, rows:rows};
+}
+function inferType(vals){ return vals.every(function(v){return v===''||/^-?\d+(\.\d+)?$/.test((v||'').trim());})?'REAL':'TEXT'; }
+
+$('#csvfile').addEventListener('change',function(e){
+  var f=e.target.files[0]; if(!f)return; var r=new FileReader();
+  r.onload=function(){ $('#csvtext').value=r.result; }; r.readAsText(f,'utf-8');
+});
+
+$('#btnLoad').onclick=function(){
+  if(!SQL){ $('#loadMsg').className='msg warn'; $('#loadMsg').textContent='SQL 引擎未就绪。'; return; }
+  var d=parseCSV($('#csvtext').value); if(!d){ $('#loadMsg').className='msg warn'; $('#loadMsg').textContent='CSV 为空。'; return; }
+  db=new SQL.Database();
+  var types=d.head.map(function(_,ci){ return inferType(d.rows.map(function(r){return r[ci];})); });
+  var cols=d.head.map(function(h,i){return '"'+h+'" '+types[i];}).join(', ');
+  db.run('CREATE TABLE data ('+cols+');');
+  var stmt=db.prepare('INSERT INTO data VALUES ('+d.head.map(function(){return '?';}).join(',')+')');
+  d.rows.forEach(function(r){ var vals=d.head.map(function(_,i){var v=(r[i]==null?'':r[i]).trim(); return types[i]==='REAL'&&v!==''?parseFloat(v):v;}); stmt.run(vals); });
+  stmt.free();
+  tableSchema='data('+d.head.map(function(h,i){return h+' '+types[i];}).join(', ')+')';
+  $('#loadMsg').className='msg ok'; $('#loadMsg').textContent='已建表 data（'+d.rows.length+' 行，列：'+d.head.join(', ')+'）。';
+  $('#btnRun').disabled=false;
+};
+
+/* ---- AI 生成 / 校验（需 API_BASE） ---- */
+function aiPost(path, payload){
+  return fetch(API_BASE+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(function(r){return r.json();}).catch(function(e){return {ok:false,note:'调用失败：'+e.message};});
+}
+function aiSay(level,msg){ $('#aiMsg').className='msg '+level; $('#aiMsg').textContent=msg; }
+$('#btnGen').onclick=function(){
+  var q=$('#question').value.trim();
+  if(!tableSchema){ aiSay('warn','请先在第 1 步导入建表（AI 需要表结构）。'); return; }
+  if(!q){ aiSay('warn','请先在第 2 步用自然语言描述问题。'); return; }
+  var b=this; b.disabled=true; b.textContent='生成中…';
+  aiPost('/api/sql-gen',{schema:tableSchema,question:q}).then(function(r){
+    b.disabled=false; b.textContent='✨ AI 生成 SQL';
+    if(!r.ok){ aiSay('warn',r.note||'生成失败'); return; }
+    $('#sql').value=r.sql; aiSay('ok','已生成 SQL（草稿），请在第 5 步实跑验证。');
+  });
+};
+$('#btnCheck').onclick=function(){
+  var q=$('#question').value.trim(), sql=$('#sql').value.trim();
+  if(!tableSchema||!q||!sql){ aiSay('warn','需要：已建表 + 问题描述 + 你的 SQL，三者齐全才能校验。'); return; }
+  var b=this; b.disabled=true; b.textContent='校验中…';
+  aiPost('/api/sql-check',{schema:tableSchema,question:q,sql:sql}).then(function(r){
+    b.disabled=false; b.textContent='🔍 AI 校验我的 SQL';
+    if(!r.ok){ aiSay('warn',r.note||'校验失败'); return; }
+    aiSay(r.pass?'ok':'warn',(r.pass?'✔ 达标：':'✘ 未达标：')+r.advice);
+  });
+};
+
+$('#btnRun').onclick=function(){
+  if(!db){ $('#runMsg').className='msg warn'; $('#runMsg').textContent='请先在第 1 步导入建表。'; return; }
+  var sql=$('#sql').value.trim(); if(!sql){ $('#runMsg').className='msg warn'; $('#runMsg').textContent='请输入 SQL。'; return; }
+  try{
+    var res=db.exec(sql);
+    if(!res.length){ $('#runMsg').className='msg ok'; $('#runMsg').textContent='执行成功（无结果集）。'; $('#result').innerHTML=''; lastResult=null; return; }
+    var r=res[0]; lastResult=r;
+    var h='<table class="result-table"><thead><tr>'+r.columns.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr></thead><tbody>';
+    r.values.slice(0,200).forEach(function(row){ h+='<tr>'+row.map(function(v){return '<td>'+(v==null?'':v)+'</td>';}).join('')+'</tr>'; });
+    h+='</tbody></table>';
+    $('#result').innerHTML=h;
+    $('#runMsg').className='msg ok'; $('#runMsg').textContent='校验通过：语句可执行，返回 '+r.values.length+' 行。'; $('#btnExport').disabled=false;
+  }catch(err){
+    $('#runMsg').className='msg warn'; $('#runMsg').textContent='语句无法执行（校验未过）：'+err.message+' —— 请检查表名(data)/列名/语法。';
+    $('#result').innerHTML=''; $('#btnExport').disabled=true;
+  }
+};
+
+$('#btnExport').onclick=function(){
+  if(!lastResult)return;
+  var csv=[lastResult.columns.join(',')].concat(lastResult.values.map(function(r){return r.map(function(v){return v==null?'':(''+v).replace(/,/g,'，');}).join(',');})).join('\n');
+  var blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=($('#outname').value||'result')+'.csv';
+  document.body.appendChild(a); a.click(); a.remove();
+};
+
+if(API_BASE){ $('#btnGen').disabled=false; $('#btnCheck').disabled=false; }
+</script>
+</body>
+</html>

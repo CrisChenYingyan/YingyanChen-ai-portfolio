@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PRD 生成器</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="container">
+  <span class="brand"><span class="dot"></span>PRD 生成器</span>
+  <span class="spacer"></span>
+  <a class="navlink" href="index.html">← 工具集</a>
+</div></nav>
+<div class="tool-head"><div class="container">
+  <h1>📄 PRD 生成器 <span class="skeleton-badge">骨架版</span></h1>
+  <p>依据《PRD写作指导.md》9 章框架 + 语言规范；风格层：通用 / 阿里 / 腾讯</p>
+</div></div>
+<main class="container"><div id="app"></div></main>
+<footer><div class="container">© 陈颖妍 · 骨架代码 · 校验规则来自 PRD写作指导.md 第 3 节</div></footer>
+
+<script src="assets/wizard.js"></script>
+<script>
+function chkQuant(v){ if(!v)return null; if(/(提升|优化|改善|更好|增强|加强)/.test(v) && !/\d/.test(v)) return {level:'warn',msg:'目标含“提升/优化”等词但无数字——目标需可量化，如“7 日留存 +5%”。'}; return null; }
+function chkAdj(v){ if(!v)return null; if(/(快速|流畅|友好|美观|大量|很多)/.test(v)&&!/\d/.test(v)) return {level:'tip',msg:'含主观形容词，建议改成可测的数字或行为。'}; return null; }
+
+var cfg={ key:'prd', apiBase:'', steps:[
+  { title:'文档信息', intro:'第 0 章：基本信息 + 选择风格层。', fields:[
+     {name:'name', label:'产品/需求名', type:'text', placeholder:'例：新用户注册引导优化'},
+     {name:'author', label:'作者 / 版本', type:'text', placeholder:'陈颖妍 / v0.1'},
+     {name:'style', label:'风格层', hint:'影响措辞侧重', type:'radio', options:['通用','阿里（业务闭环+数据指标）','腾讯（体验交互+性能细节）']}
+  ]},
+  { title:'项目概述', intro:'第 1 章：背景、目标（可量化）、非目标、北极星指标、参与人。', fields:[
+     {name:'bg', label:'背景（为何做，1–3 句）', type:'textarea'},
+     {name:'goal', label:'目标（必须可量化）', type:'textarea', placeholder:'例：30 日内注册转化率从 40% 提升到 50%', check:chkQuant},
+     {name:'nongoal', label:'非目标（不解决什么）', type:'text',
+        check:function(v){ if(!v) return {level:'tip',msg:'建议写明“不做什么”，避免范围蔓延。'}; return null; }},
+     {name:'metric', label:'北极星 / 上线后评估指标', type:'text'},
+     {name:'people', label:'参与人', type:'text', placeholder:'产品/设计/前端/后端/测试'}
+  ]},
+  { title:'需求范围', intro:'第 2 章：做什么 / 不做什么 / 依赖假设。', fields:[
+     {name:'in', label:'本期做（In Scope）', type:'lines'},
+     {name:'out', label:'本期不做（Out of Scope）', type:'lines',
+        check:function(v){ if(!v) return {level:'tip',msg:'未写边界，易范围蔓延。'}; return null; }},
+     {name:'dep', label:'依赖与假设', type:'textarea'}
+  ]},
+  { title:'用户与场景', intro:'第 3 章：画像、角色权限、用户故事。', fields:[
+     {name:'persona', label:'目标用户画像', type:'textarea'},
+     {name:'story', label:'用户故事', hint:'作为__，我想要__，以便__', type:'lines', placeholder:'作为新用户，我想要一键第三方登录，以便快速完成注册',
+        check:function(v){ if(v && !/以便|以此|从而/.test(v)) return {level:'tip',msg:'用户故事建议补上“以便<价值>”。'}; return null; }}
+  ]},
+  { title:'功能需求', intro:'第 4 章（主体）：每个功能都要有验收标准与边界异常。', fields:[
+     {name:'flist', label:'功能清单（每行：功能名 | 优先级P0/P1/P2）', type:'lines', placeholder:'第三方一键登录 | P0\n注册进度保存 | P1'},
+     {name:'fdetail', label:'某功能详述（描述/流程/字段/边界异常/验收标准）', type:'textarea', placeholder:'功能：第三方一键登录\n流程：点击→授权→回调建账号→进首页\n边界：授权失败/网络失败/已存在账号→…\n验收：授权成功后 3s 内进首页，失败有明确提示',
+        check:function(v){ if(!v)return null; var miss=[]; if(!/验收/.test(v))miss.push('验收标准'); if(!/边界|异常|失败/.test(v))miss.push('边界异常'); return miss.length?{level:'warn',msg:'该功能缺：'+miss.join('、')+'（不写会导致“无法判定完成/上线即崩”）。'}:{level:'ok',msg:'已含验收与边界，良好。'}; }}
+  ]},
+  { title:'非功能需求', intro:'第 5 章：性能（给数字）、安全、兼容、合规。', fields:[
+     {name:'perf', label:'性能（给数字）', type:'text', placeholder:'列表首屏<1s；支持 1000 并发', check:chkAdj},
+     {name:'sec', label:'安全 / 合规', type:'text'},
+     {name:'compat', label:'兼容性', type:'text'}
+  ]},
+  { title:'数据与埋点', intro:'第 6 章：指标定义 + 埋点方案。', fields:[
+     {name:'track', label:'埋点（事件名/触发时机/上报字段）', type:'lines', placeholder:'register_success | 注册成功 | user_id,channel'},
+     {name:'eval', label:'如何评估目标达成', type:'text'}
+  ]},
+  { title:'发布与里程碑', intro:'第 7 章：排期、灰度、回滚。', fields:[
+     {name:'plan', label:'排期 / 里程碑', type:'text'},
+     {name:'release', label:'发布策略', type:'radio', options:['全量','灰度']},
+     {name:'rollback', label:'回滚策略', type:'text',
+        check:function(v){ if(!v) return {level:'tip',msg:'缺回滚预案（验收+数据+回滚=闭环）。'}; return null; }}
+  ]},
+  { title:'附录 & 终审', intro:'第 8 章：术语 / TBD。完成后导出，并对照自检清单。', fields:[
+     {name:'tbd', label:'待定项 TBD（内容 @负责人 截止）', type:'lines'},
+     {name:'checklist', label:'自检清单', type:'checks', options:['目标可量化','写了不做什么','每功能有验收','覆盖边界异常','有回滚预案','术语一致']},
+     {name:'_note', type:'static', html:'<div class="callout">右侧实时生成 PRD 预览，点“导出 .md”。配置 apiBase 后可启用“一键规范表述”。</div>'}
+  ]}
+],
+buildPreview:function(s){
+  var o=['# '+(s.name||'《未命名》')+' — 产品需求文档 PRD',''];
+  o.push('_作者/版本：'+(s.author||'—')+' · 风格：'+(s.style||'通用')+'_','');
+  o.push('## 1. 项目概述');
+  if(s.bg)o.push('**背景**：'+s.bg); if(s.goal)o.push('**目标**：'+s.goal); if(s.nongoal)o.push('**非目标**：'+s.nongoal);
+  if(s.metric)o.push('**指标**：'+s.metric); if(s.people)o.push('**参与人**：'+s.people);
+  o.push(''); o.push('## 2. 需求范围');
+  if(s.in)o.push('**In Scope**：'); if(s.in)s.in.split('\n').forEach(function(x){if(x.trim())o.push('- '+x);});
+  if(s.out){o.push('**Out of Scope**：');s.out.split('\n').forEach(function(x){if(x.trim())o.push('- '+x);});}
+  if(s.dep)o.push('**依赖与假设**：'+s.dep);
+  o.push(''); o.push('## 3. 用户与场景'); if(s.persona)o.push(s.persona);
+  if(s.story){o.push('**用户故事**：');s.story.split('\n').forEach(function(x){if(x.trim())o.push('- '+x);});}
+  o.push(''); o.push('## 4. 功能需求');
+  if(s.flist){o.push('| 功能 | 优先级 |','|---|---|');s.flist.split('\n').forEach(function(x){var p=x.split('|');if(p[0]&&p[0].trim())o.push('| '+(p[0]||'').trim()+' | '+((p[1]||'').trim()||'-')+' |');});}
+  if(s.fdetail){o.push('');o.push('**功能详述**：');o.push('```');o.push(s.fdetail);o.push('```');}
+  o.push(''); o.push('## 5. 非功能需求'); if(s.perf)o.push('**性能**：'+s.perf); if(s.sec)o.push('**安全/合规**：'+s.sec); if(s.compat)o.push('**兼容**：'+s.compat);
+  o.push(''); o.push('## 6. 数据与埋点'); if(s.track)s.track.split('\n').forEach(function(x){if(x.trim())o.push('- '+x);}); if(s.eval)o.push('**评估**：'+s.eval);
+  o.push(''); o.push('## 7. 发布与里程碑'); if(s.plan)o.push('**排期**：'+s.plan); if(s.release)o.push('**发布**：'+s.release); if(s.rollback)o.push('**回滚**：'+s.rollback);
+  o.push(''); o.push('## 8. 附录'); if(s.tbd)s.tbd.split('\n').forEach(function(x){if(x.trim())o.push('- TBD：'+x);});
+  if(s.checklist)o.push('','**自检通过**：'+s.checklist.join('、'));
+  return o.join('\n');
+}};
+new Wizard(cfg).mount('#app');
+</script>
+</body>
+</html>

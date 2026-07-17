@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>访谈提纲 & 问卷生成器</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="container">
+  <span class="brand"><span class="dot"></span>访谈提纲 & 问卷生成器</span>
+  <span class="spacer"></span>
+  <a class="navlink" href="index.html">← 工具集</a>
+</div></nav>
+<div class="tool-head"><div class="container">
+  <h1>📋 访谈提纲 & 问卷生成器 <span class="skeleton-badge">骨架版</span></h1>
+  <p>理论依据：Schwarz(1999) 措辞效应 · Tourangeau(2000) 四阶段认知模型 · Kvale(1996) 访谈七阶段（见《如何设计访问提纲or问卷.docx》）</p>
+</div></div>
+<main class="container"><div id="app"></div></main>
+<footer><div class="container">© 陈颖妍 · 骨架代码 · 逐题校验规则来自方法论文档</div></footer>
+
+<script src="assets/wizard.js"></script>
+<script>
+/* 校验规则（来自 如何设计…docx 第二部分 题项规范） */
+function chkInduce(v){ if(!v)return null; if(/难道|不觉得|是不是很|您一定|大家都|众所周知/.test(v)) return {level:'warn',msg:'检测到可能的诱导性措辞（呼应 Schwarz：措辞会左右作答），建议改中性表述。'}; return null; }
+function chkDouble(v){ if(!v)return null; if(/(满意|喜欢|认可)[^。？\n]{0,12}(和|以及|与|且)[^。？\n]{0,12}(满意|喜欢|价格|服务|质量)/.test(v)) return {level:'tip',msg:'疑似“双重命题(double-barreled)”——一题问了两件事，建议拆成两题。'}; return null; }
+function chkNeg(v){ if(!v)return null; if(/不[^，。？\n]{0,6}不/.test(v)) return {level:'tip',msg:'疑似双重否定，改成正向表述更易理解。'}; return null; }
+
+var cfg = {
+  key:'survey', apiBase:'',
+  steps:[
+    { title:'明确问题', intro:'第一步：想清楚这次研究要回答什么、给谁做决策用。（对应 Kvale 的 thematizing）',
+      fields:[
+        {name:'q', label:'研究问题', hint:'一句话，尽量单一聚焦', type:'textarea', placeholder:'例：新用户为何在注册后 3 天内流失？',
+          check:function(v){ if(v && v.length>60) return {level:'tip',msg:'问题偏长/可能过宽，考虑拆分为更聚焦的子问题。'}; return null; }},
+        {name:'decision', label:'这个结论将用于什么决策', type:'text', placeholder:'例：优化注册引导流程'}
+      ]},
+    { title:'对象与体量', intro:'第二步：目标人群、样本量/访谈人数、预计时长。',
+      fields:[
+        {name:'target', label:'目标人群', type:'text', placeholder:'例：注册 7 天内流失的新用户'},
+        {name:'size', label:'样本量 / 访谈人数', type:'text', placeholder:'问卷≥一定量可统计；访谈 5–8 人起',
+          check:function(v){ if(v && /^\d+$/.test(v) && +v<5) return {level:'tip',msg:'访谈样本偏少；可用性问题通常 5–8 人可覆盖大部分（腾讯用研经验）。'}; return null; }},
+        {name:'dur', label:'预计时长', type:'text', placeholder:'问卷 ≤5 分钟；访谈 30–60 分钟'}
+      ]},
+    { title:'选产出物', intro:'第三步：要广度可推广→问卷（定量测态度）；要深层 Why→访谈（定性）。',
+      fields:[
+        {name:'kind', label:'产出物类型', type:'radio', options:['问卷','访谈提纲']}
+      ]},
+    { title:'结构与维度', intro:'第四步：选择要包含的模块 / 题型。',
+      fields:[
+        {name:'modules', label:'问卷模块（问卷用）', type:'checks', options:['甄别/筛选题','主体题','人口学信息','结束语/邀约']},
+        {name:'types', label:'题型（问卷用）', type:'checks', options:['单选','多选','Likert量表','开放题']},
+        {name:'imods', label:'访谈主题模块（提纲用）', type:'checks', options:['暖场/破冰','背景与行为','核心主题','关键追问','收尾']}
+      ]},
+    { title:'逐题录入 + 校验', intro:'第五步：每行一题。系统实时提示诱导性 / 双重命题 / 双重否定。',
+      fields:[
+        {name:'items', label:'题目（每行一题）', type:'lines', placeholder:'请描述您上次注册时遇到的困难\n您对价格是否满意？',
+          check:function(v){ if(!v)return null; var ls=v.split('\n'); for(var i=0;i<ls.length;i++){ var r=chkInduce(ls[i])||chkDouble(ls[i])||chkNeg(ls[i]); if(r){ r.msg='第'+(i+1)+'题：'+r.msg; return r; } } return {level:'ok',msg:'未检出常见表述问题（仍建议人工复核 + 认知预访）。'}; }},
+        {name:'openrule', label:'（访谈）追问预设', hint:'为核心问题预设“为什么/举例/当时怎么想”', type:'textarea', placeholder:'能不能举一个具体的例子？当时你是怎么想的？'}
+      ]},
+    { title:'预览 + 导出', intro:'第六步：正式发放前做“认知预访”（小样本出声思考，检验被试是否按你的意图理解）。',
+      fields:[
+        {name:'pretest', label:'认知预访清单（勾选确认）', type:'checks', options:['已找 3–5 人试答/试访','已确认题目理解无歧义','已修订发现的问题']},
+        {name:'_export', type:'static', html:'<div class="callout">右侧为实时预览。点“导出 .md”生成文件；后续可用 AI（配置 apiBase 后）做一键规范表述与批量出题草稿。</div>'}
+      ]}
+  ],
+  buildPreview:function(s){
+    var t=s.kind||'问卷/访谈提纲', out=['# '+(t)+'（草稿）',''];
+    if(s.q) out.push('**研究问题**：'+s.q);
+    if(s.decision) out.push('**决策用途**：'+s.decision);
+    if(s.target) out.push('**对象**：'+s.target+(s.size?'（'+s.size+'）':'')+(s.dur?' · '+s.dur:''));
+    out.push('');
+    if(s.kind==='问卷'){
+      out.push('## 结构'); (s.modules||[]).forEach(function(m){out.push('- '+m);});
+      if(s.types&&s.types.length) out.push('**题型**：'+s.types.join('、'));
+    } else if(s.kind==='访谈提纲'){
+      out.push('## 提纲结构'); (s.imods||[]).forEach(function(m){out.push('- '+m);});
+    }
+    out.push('');
+    if(s.items){ out.push('## 题目'); s.items.split('\n').forEach(function(q,i){ if(q.trim()) out.push((i+1)+'. '+q); }); }
+    if(s.openrule){ out.push(''); out.push('**追问预设**：'+s.openrule); }
+    if(s.pretest&&s.pretest.length){ out.push(''); out.push('**预访确认**：'+s.pretest.join('、')); }
+    return out.join('\n');
+  }
+};
+new Wizard(cfg).mount('#app');
+</script>
+</body>
+</html>

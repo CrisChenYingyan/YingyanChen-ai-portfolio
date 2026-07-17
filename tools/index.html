@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI 小工具集 · 陈颖妍</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="container">
+  <span class="brand"><span class="dot"></span>陈颖妍 · AI 小工具集</span>
+  <span class="spacer"></span>
+  <a class="navlink" href="../index.html">← 返回作品集</a>
+</div></nav>
+
+<header class="hero"><div class="container">
+  <span class="kicker">用研 × 心理学 × AI · 作品集 Tools 区</span>
+  <h1>把研究方法，做成人人可用的小工具</h1>
+  <p>4 个网页工具，用分步向导带零基础用户产出规范的问卷/访谈提纲、PRD、开放题编码与 SQL 分析。每个工具都由对应的方法论设计文档支撑（见 CV_web 目录）。</p>
+</div></header>
+
+<main class="container">
+  <div class="grid">
+
+    <a class="card" href="survey.html">
+      <div class="ico">📋</div>
+      <h3>访谈提纲 & 问卷生成器</h3>
+      <p>分步引导：明确问题 → 选对象与体量 → 选提纲/问卷 → 逐题生成，实时校验诱导性、双重命题、选项互斥。</p>
+      <div class="tags"><span class="tag">问卷设计</span><span class="tag">用户访谈</span><span class="tag">表述校验</span></div>
+      <span class="btn sm">开始使用 →</span>
+    </a>
+
+    <a class="card" href="prd.html">
+      <div class="ico">📄</div>
+      <h3>PRD 生成器</h3>
+      <p>按 9 章 PRD 框架逐步引导填写，实时提示“目标要可量化 / 补验收标准 / 加边界异常”，一键导出。</p>
+      <div class="tags"><span class="tag">产品需求</span><span class="tag">大厂框架</span><span class="tag">自检清单</span></div>
+      <span class="btn sm">开始使用 →</span>
+    </a>
+
+    <a class="card" href="coding.html">
+      <div class="ico">🏷️</div>
+      <h3>开放题自动编码器</h3>
+      <p>AI 辅助归纳类目 + 生成编码簿 + 逐条编码 + 人工复核 + κ/α 信度。半自动、人不缺位。</p>
+      <div class="tags"><span class="tag">内容分析</span><span class="tag">主题编码</span><span class="tag">编码者信度</span></div>
+      <span class="btn sm">开始使用 →</span>
+    </a>
+
+    <a class="card" href="sql.html">
+      <div class="ico">🧮</div>
+      <h3>SQL 妙妙小工具</h3>
+      <p>导入 CSV → 描述问题 → 生成带注释 SQL → 校验你的写法 → 浏览器内执行（sql.js）出结果。</p>
+      <div class="tags"><span class="tag">SQL 生成</span><span class="tag">语句校验</span><span class="tag">浏览器执行</span></div>
+      <span class="btn sm">开始使用 →</span>
+    </a>
+
+  </div>
+
+  <div class="callout">
+    <b>说明：</b>本页面为<span class="skeleton-badge">骨架版</span>——分步流程、样式、导出可用；需要大模型的步骤（AI 生成/润色/归类）为占位，部署时在各工具的 <code>apiBase</code> 填入 serverless 接口即可启用（见 <code>tools/api/README.md</code>）。
+  </div>
+</main>
+
+<footer><div class="container">© 陈颖妍 · 用研作品集 · 浙大蓝主题 · 骨架代码 2026</div></footer>
+</body>
+</html>

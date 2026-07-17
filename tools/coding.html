@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>开放题自动编码器</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="container">
+  <span class="brand"><span class="dot"></span>开放题自动编码器</span>
+  <span class="spacer"></span>
+  <a class="navlink" href="index.html">← 工具集</a>
+</div></nav>
+<div class="tool-head"><div class="container">
+  <h1>🏷️ 开放题自动编码器 <span class="skeleton-badge">骨架版</span></h1>
+  <p>方法：内容分析(Krippendorff) · 主题分析六步(Braun&Clarke) · 三级编码 · 编码者间信度 κ/α（见《开放题自动编码.docx》）</p>
+</div></div>
+<main class="container">
+  <div class="callout warn"><b>定位：</b>“AI 辅助的半自动编码 + 人工复核”。编码的科学性依赖编码者间信度，人不可缺位。</div>
+  <div id="app"></div>
+</main>
+<footer><div class="container">© 陈颖妍 · 骨架代码 · κ 计算已内置可用</div></footer>
+
+<script src="assets/wizard.js"></script>
+<script>
+/* 真实 Cohen's κ：两列（每行一个编码）逐行比对 */
+function cohenKappa(a,b){
+  a=(a||'').split('\n').map(function(x){return x.trim();});
+  b=(b||'').split('\n').map(function(x){return x.trim();});
+  var n=Math.min(a.length,b.length), pairs=[];
+  for(var i=0;i<n;i++){ if(a[i]!==''&&b[i]!=='') pairs.push([a[i],b[i]]); }
+  if(pairs.length<2) return null;
+  var N=pairs.length, agree=0, ca={}, cb={};
+  pairs.forEach(function(p){ if(p[0]===p[1])agree++; ca[p[0]]=(ca[p[0]]||0)+1; cb[p[1]]=(cb[p[1]]||0)+1; });
+  var po=agree/N, pe=0;
+  for(var k in ca){ if(cb[k]) pe+=(ca[k]/N)*(cb[k]/N); }
+  var kappa=(pe<1)?(po-pe)/(1-pe):1;
+  return {N:N, po:po, kappa:kappa};
+}
+var cfg={ key:'coding', apiBase:'', steps:[
+  { title:'导入答案', intro:'第 1 步：粘贴开放题答案，每行一条（=一个分析单元）。', fields:[
+     {name:'answers', label:'开放题答案（每行一条）', type:'lines', placeholder:'加载太慢了\n找不到入口\n价格有点贵\n界面看不懂',
+        check:function(v){ if(!v)return null; var n=v.split('\n').filter(function(x){return x.trim();}).length; return {level:'ok',msg:'已载入 '+n+' 条待编码单元。'}; }}
+  ]},
+  { title:'研究问题 & 单元', intro:'第 2 步：明确要回答什么、分析单元粒度。', fields:[
+     {name:'rq', label:'研究问题', type:'text', placeholder:'用户不满意的主要原因有哪些？'},
+     {name:'unit', label:'分析单元', type:'radio', options:['整条回答','句子','意义单元']}
+  ]},
+  { title:'归纳类目（编码簿）', intro:'第 3 步：定义类目。可先人工，AI（配置 apiBase 后）读样本给候选类目。每行：类目名 | 定义 | 例句。', fields:[
+     {name:'codebook', label:'编码簿', type:'lines', placeholder:'性能 | 加载/卡顿相关 | “加载太慢了”\n易用性 | 找不到/看不懂 | “找不到入口”\n价格 | 费用相关 | “价格有点贵”',
+        check:function(v){ if(!v)return null; return {level:'tip',msg:'原则：类目互斥且穷尽(MECE)；保留“其他/无法归类”。'}; }},
+     {name:'aihint', type:'static', html:'<div class="callout">（骨架占位）配置 apiBase 后，可点“AI 归纳候选类目”自动读全部答案生成编码簿草稿，再由你增删改。</div>'}
+  ]},
+  { title:'逐条编码', intro:'第 4 步：人机协同。AI 给建议编码+置信度，你逐条复核。此处骨架用“编码者 A”手工编码演示。', fields:[
+     {name:'coderA', label:'编码者 A：给每条答案编码（每行一个类目，顺序对应答案）', type:'lines', placeholder:'性能\n易用性\n价格\n易用性'}
+  ]},
+  { title:'双编码与信度 κ', intro:'第 5 步：第二位编码者（或 AI 二次）独立编码，计算 Cohen’s κ。', fields:[
+     {name:'coderB', label:'编码者 B：独立编码（每行一个类目）', type:'lines', placeholder:'性能\n易用性\n价格\n性能',
+        check:function(v,s){ var r=cohenKappa(s.coderA,v); if(!r) return {level:'tip',msg:'两列各需 ≥2 个对应编码才能算 κ。'};
+          var lvl=r.kappa>=0.8?'ok':(r.kappa>=0.6?'tip':'warn');
+          return {level:lvl,msg:'N='+r.N+'，观察一致 '+(r.po*100).toFixed(0)+'%，Cohen’s κ='+r.kappa.toFixed(2)+'（≥0.8 良好，0.6–0.8 可接受，<0.6 需讨论修订编码簿重编）。'}; }}
+  ]},
+  { title:'导出', intro:'第 6 步：导出编码结果 + 编码簿 + 频次。', fields:[
+     {name:'_x', type:'static', html:'<div class="callout">右侧预览含编码簿与信度小结，点“导出 .md”。完整版还可导出逐条编码 CSV 与类目频次。</div>'}
+  ]}
+],
+buildPreview:function(s){
+  var o=['# 开放题编码结果（草稿）',''];
+  if(s.rq)o.push('**研究问题**：'+s.rq); if(s.unit)o.push('**分析单元**：'+s.unit); o.push('');
+  if(s.codebook){ o.push('## 编码簿'); o.push('| 类目 | 定义 | 例句 |','|---|---|---|'); s.codebook.split('\n').forEach(function(x){ if(x.trim()){ var p=x.split('|'); o.push('| '+((p[0]||'').trim())+' | '+((p[1]||'').trim())+' | '+((p[2]||'').trim())+' |'); } }); o.push(''); }
+  var r=cohenKappa(s.coderA,s.coderB);
+  if(r){ o.push('## 编码者间信度'); o.push('- 样本 N='+r.N+'，观察一致率 '+(r.po*100).toFixed(0)+'%'); o.push('- **Cohen’s κ = '+r.kappa.toFixed(2)+'**'+(r.kappa<0.6?'（偏低：建议讨论、修订编码簿后重编）':'')); o.push(''); }
+  // 频次（以编码者A为准）
+  if(s.coderA){ var f={}; s.coderA.split('\n').forEach(function(c){c=c.trim();if(c)f[c]=(f[c]||0)+1;}); var ks=Object.keys(f); if(ks.length){ o.push('## 类目频次（编码者A）'); ks.forEach(function(k){o.push('- '+k+'：'+f[k]);}); } }
+  return o.join('\n');
+}};
+new Wizard(cfg).mount('#app');
+</script>
+</body>
+</html>
