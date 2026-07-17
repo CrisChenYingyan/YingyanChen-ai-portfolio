@@ -38,7 +38,7 @@ function cohenKappa(a,b){
   var kappa=(pe<1)?(po-pe)/(1-pe):1;
   return {N:N, po:po, kappa:kappa};
 }
-var cfg={ key:'coding', apiBase:'', steps:[
+var cfg={ key:'coding', apiBase:'https://yingyan-chen-ai-portfolio.vercel.app', steps:[
   { title:'导入答案', intro:'第 1 步：粘贴开放题答案，每行一条（=一个分析单元）。', fields:[
      {name:'answers', label:'开放题答案（每行一条）', type:'lines', placeholder:'加载太慢了\n找不到入口\n价格有点贵\n界面看不懂',
         check:function(v){ if(!v)return null; var n=v.split('\n').filter(function(x){return x.trim();}).length; return {level:'ok',msg:'已载入 '+n+' 条待编码单元。'}; }}

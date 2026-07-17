@@ -27,7 +27,7 @@ function chkDouble(v){ if(!v)return null; if(/(满意|喜欢|认可)[^。？\n]{
 function chkNeg(v){ if(!v)return null; if(/不[^，。？\n]{0,6}不/.test(v)) return {level:'tip',msg:'疑似双重否定，改成正向表述更易理解。'}; return null; }
 
 var cfg = {
-  key:'survey', apiBase:'',
+  key:'survey', apiBase:'https://yingyan-chen-ai-portfolio.vercel.app',
   steps:[
     { title:'明确问题', intro:'第一步：想清楚这次研究要回答什么、给谁做决策用。（对应 Kvale 的 thematizing）',
       fields:[

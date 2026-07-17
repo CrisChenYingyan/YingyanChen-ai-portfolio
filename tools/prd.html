@@ -24,7 +24,7 @@
 function chkQuant(v){ if(!v)return null; if(/(提升|优化|改善|更好|增强|加强)/.test(v) && !/\d/.test(v)) return {level:'warn',msg:'目标含“提升/优化”等词但无数字——目标需可量化，如“7 日留存 +5%”。'}; return null; }
 function chkAdj(v){ if(!v)return null; if(/(快速|流畅|友好|美观|大量|很多)/.test(v)&&!/\d/.test(v)) return {level:'tip',msg:'含主观形容词，建议改成可测的数字或行为。'}; return null; }
 
-var cfg={ key:'prd', apiBase:'', steps:[
+var cfg={ key:'prd', apiBase:'https://yingyan-chen-ai-portfolio.vercel.app', steps:[
   { title:'文档信息', intro:'第 0 章：基本信息 + 选择风格层。', fields:[
      {name:'name', label:'产品/需求名', type:'text', placeholder:'例：新用户注册引导优化'},
      {name:'author', label:'作者 / 版本', type:'text', placeholder:'陈颖妍 / v0.1'},
