@@ -112,3 +112,13 @@ footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-s
 .result-table td,.result-table th{border:1px solid var(--line);padding:5px 9px;text-align:left}
 .result-table th{background:#eef4fc;color:var(--zju-2)}
 code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:12.5px}
+
+
+/* ===== 语言切换按钮（nav 深蓝底：默认白字 + 地球图标 + 弹性交互 + 入场脉冲） ===== */
+.langbtn{margin-left:8px;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.75);color:#fff;font-size:13px;font-weight:700;letter-spacing:.5px;padding:5px 13px;border-radius:999px;cursor:pointer;line-height:1;white-space:nowrap;transition:transform .18s cubic-bezier(.34,1.56,.64,1),background .18s ease,box-shadow .18s ease,color .18s ease;animation:langpulse 1.6s ease-out 3}
+.langbtn::before{content:"🌐";font-size:13px;line-height:1}
+.langbtn:hover{background:#fff;color:var(--zju);border-color:#fff;transform:translateY(-1px) scale(1.06);box-shadow:0 5px 16px rgba(0,0,0,.25)}
+.langbtn:active{transform:translateY(0) scale(.95)}
+.langbtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@keyframes langpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}70%{box-shadow:0 0 0 11px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+@media(max-width:860px){.langbtn{margin-left:auto}}
