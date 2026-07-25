@@ -11,6 +11,7 @@
   <span class="brand"><span class="dot"></span><span data-i18n="brand">访谈提纲 &amp; 问卷生成器</span></span>
   <span class="spacer"></span>
   <a class="navlink" href="index.html" data-i18n="back">← 工具集</a>
+  <button id="manualBtn" class="manualbtn" type="button" data-i18n="manual_btn">📖 操作手册</button>
   <button id="langBtn" class="langbtn" type="button" aria-label="切换到英文 / Switch to English">EN</button>
 </div></nav>
 <div class="tool-head"><div class="container">
@@ -18,6 +19,7 @@
   <p data-i18n="sub">理论依据：Schwarz(1999) 措辞效应 · Tourangeau(2000) 四阶段认知模型 · Kvale(1996) 访谈七阶段（见《如何设计访问提纲or问卷.docx》）</p>
 </div></div>
 <main class="container"><div id="app"></div></main>
+<div class="manual-mask" id="manualMask" role="dialog" aria-modal="true"><div class="manual-box"><div class="mhead"><h3 data-i18n="manual_title">📖 操作手册 · 访谈提纲 & 问卷生成器</h3><button class="mclose" id="manualClose" type="button" data-i18n="manual_close">关闭 ✕</button></div><div class="manual-body" data-i18n="manual_body"><p class="mintro">分 6 步，把"想调研"变成一份结构规范、表述无硬伤的问卷或访谈提纲，边填边校验，一键导出 .md。右上角 🌐 中英切换，填写内容存浏览器本地。</p><div class="step"><b>第 1 步 · 明确问题</b><br>🎯 目的：想清楚要回答什么、给谁做决策<br>⌨️ 输入：研究问题（一句话）+ 决策用途<br>🖱️ 操作：各填一句；问题过长会提示拆分<br>📤 输出：预览抬头出现研究问题/决策用途两行</div><div class="step"><b>第 2 步 · 对象与体量</b><br>🎯 目的：定清楚问谁、多少人、多久<br>⌨️ 输入：目标人群 / 样本量 / 时长<br>🖱️ 操作：逐项填；访谈 <5 人会提示样本偏少<br>📤 输出：预览"对象"行汇总</div><div class="step"><b>第 3 步 · 选产出物</b><br>🎯 目的：定方向：广度→问卷，深挖→访谈<br>⌨️ 输入：单选 问卷 / 访谈提纲<br>🖱️ 操作：点选其一，决定第 4 步模块与文档结构<br>📤 输出：预览标题变为问卷/访谈草稿</div><div class="step"><b>第 4 步 · 结构与维度</b><br>🎯 目的：搭骨架：选模块 / 题型<br>⌨️ 输入：问卷模块+题型 或 访谈主题模块<br>🖱️ 操作：勾选需要的项（可多选）<br>📤 输出：预览生成结构骨架</div><div class="step"><b>第 5 步 · 逐题录入 + 校验 ★</b><br>🎯 目的：写出题目并当场排掉三类硬伤<br>⌨️ 输入：题目（每行一题）+ 追问预设<br>🖱️ 操作：每行一题；实时校验诱导性/双重命题/双重否定<br>📤 输出：预览"题目"列表；提示不进导出文档</div><div class="step"><b>第 6 步 · 预览 + 导出</b><br>🎯 目的：发放前质量兜底并拿到成品<br>⌨️ 输入：勾选认知预访清单<br>🖱️ 操作：点导出 .md；或 ✨AI 润色（需配置 API）<br>📤 输出：一份 .md 问卷/提纲文件</div><p class="mnote">方法论：Schwarz(1999) 措辞效应 · Tourangeau(2000) 四阶段认知模型 · Kvale(1996) 访谈七阶段。</p></div></div></div>
 <footer><div class="container" data-i18n="foot">© 陈颖妍 · 骨架代码 · 逐题校验规则来自方法论文档</div></footer>
 
 <script src="assets/wizard.js"></script>
@@ -103,6 +105,10 @@ new Wizard(cfg).mount('#app');
 <script>
 window.I18N_EN_TITLE = "Interview Guide & Survey Generator";
 window.I18N_EN = {
+  manual_btn: "📖 Manual",
+  manual_title: "📖 Manual · Interview Guide & Survey Generator",
+  manual_close: "Close ✕",
+  manual_body: `<p class="mintro">In 6 steps, turn a vague "I want to research something" into a rigorous survey or interview guide, with live checks and one-click .md export. 🌐 top-right toggles language; entries are saved locally.</p><div class="step"><b>Step 1 · Define the question</b><br>🎯 Purpose: Get clear on what to answer and whose decision it serves<br>⌨️ Input: Research question (one line) + decision use<br>🖱️ How: Fill each; an over-long question prompts a split<br>📤 Output: Preview header shows both lines</div><div class="step"><b>Step 2 · Audience & scale</b><br>🎯 Purpose: Define who, how many, how long<br>⌨️ Input: Target population / sample size / duration<br>🖱️ How: Fill each; <5 interviewees triggers a small-sample hint<br>📤 Output: Preview "audience" line</div><div class="step"><b>Step 3 · Choose the deliverable</b><br>🎯 Purpose: Set direction: breadth→survey, depth→interview<br>⌨️ Input: Pick survey or interview guide<br>🖱️ How: Pick one; drives step 4 modules and structure<br>📤 Output: Preview title changes accordingly</div><div class="step"><b>Step 4 · Structure & dimensions</b><br>🎯 Purpose: Build the skeleton: pick modules / item types<br>⌨️ Input: Survey modules+types, or interview theme modules<br>🖱️ How: Tick what you need (multi-select)<br>📤 Output: Preview builds the skeleton</div><div class="step"><b>Step 5 · Enter items + checks ★</b><br>🎯 Purpose: Write items and catch three common flaws on the spot<br>⌨️ Input: Items (one per line) + probe presets<br>🖱️ How: One item per line; live checks for leading / double-barreled / double-negative<br>📤 Output: Preview items list; hints are excluded from export</div><div class="step"><b>Step 6 · Preview + export</b><br>🎯 Purpose: Quality gate before launch, then get the file<br>⌨️ Input: Tick the cognitive-pretest checklist<br>🖱️ How: Click Export .md; or ✨AI polish (needs API)<br>📤 Output: A .md survey/guide file</div><p class="mnote">Methodology: Schwarz (1999) wording effects · Tourangeau (2000) four-stage model · Kvale (1996) seven stages of interviewing.</p>`,
   brand: "Interview Guide & Survey Generator",
   back: "← Tools",
   th: "Interview Guide & Survey Generator",
@@ -112,5 +118,6 @@ window.I18N_EN = {
 };
 </script>
 <script src="assets/i18n.js"></script>
+<script>(function(){var b=document.getElementById('manualBtn'),m=document.getElementById('manualMask'),c=document.getElementById('manualClose');if(!b||!m)return;function o(){m.classList.add('open');document.body.style.overflow='hidden';}function x(){m.classList.remove('open');document.body.style.overflow='';}b.addEventListener('click',o);c.addEventListener('click',x);m.addEventListener('click',function(e){if(e.target===m)x();});document.addEventListener('keydown',function(e){if(e.key==='Escape')x();});})();</script>
 </body>
 </html>

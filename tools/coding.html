@@ -11,6 +11,7 @@
   <span class="brand"><span class="dot"></span><span data-i18n="brand">开放题自动编码器</span></span>
   <span class="spacer"></span>
   <a class="navlink" href="index.html" data-i18n="back">← 工具集</a>
+  <button id="manualBtn" class="manualbtn" type="button" data-i18n="manual_btn">📖 操作手册</button>
   <button id="langBtn" class="langbtn" type="button" aria-label="切换到英文 / Switch to English">EN</button>
 </div></nav>
 <div class="tool-head"><div class="container">
@@ -21,6 +22,7 @@
   <div class="callout warn" data-i18n="pos"><b>定位：</b>“AI 辅助的半自动编码 + 人工复核”。编码的科学性依赖编码者间信度，人不可缺位。</div>
   <div id="app"></div>
 </main>
+<div class="manual-mask" id="manualMask" role="dialog" aria-modal="true"><div class="manual-box"><div class="mhead"><h3 data-i18n="manual_title">📖 操作手册 · 开放题自动编码器</h3><button class="mclose" id="manualClose" type="button" data-i18n="manual_close">关闭 ✕</button></div><div class="manual-body" data-i18n="manual_body"><p class="mintro">把一堆开放题答案半自动归纳成类目、逐条编码，内置计算 Cohen\u2019s κ 编码者间信度，一键导出。定位：AI 辅助 + 人工复核，人不可缺位。</p><div class="step"><b>第 1 步 · 导入答案</b><br>🎯 目的：把待分析答案录入系统<br>⌨️ 输入：开放题答案，每行一条<br>🖱️ 操作：粘贴或输入，一行一条<br>📤 输出：显示"已载入 N 条待编码单元"</div><div class="step"><b>第 2 步 · 研究问题 & 单元</b><br>🎯 目的：明确回答什么、以多大颗粒度编码<br>⌨️ 输入：研究问题；分析单元(整条/句子/意义单元)<br>🖱️ 操作：填问题，单选单元粒度<br>📤 输出：预览顶部出现问题与单元</div><div class="step"><b>第 3 步 · 归纳类目（编码簿）</b><br>🎯 目的：建立"给答案贴什么标签"的规则表<br>⌨️ 输入：编码簿：类目名|定义|例句<br>🖱️ 操作：逐行定义，遵循 MECE、保留"其他"<br>📤 输出：预览生成编码簿表格</div><div class="step"><b>第 4 步 · 逐条编码</b><br>🎯 目的：由编码者 A 给每条贴类目<br>⌨️ 输入：编码者 A：每行一个类目，顺序对应答案<br>🖱️ 操作：按答案顺序逐行填类目名<br>📤 输出：预览生成类目频次</div><div class="step"><b>第 5 步 · 双编码与信度 κ ★</b><br>🎯 目的：验证类目能被他人一致套用<br>⌨️ 输入：编码者 B 的独立编码<br>🖱️ 操作：独立编码后填入，自动算 Cohen\u2019s κ<br>📤 输出：显示 N/一致率/κ（≥0.8 良好，<0.6 需重编）</div><div class="step"><b>第 6 步 · 导出</b><br>🎯 目的：拿到可存档的编码结果<br>⌨️ 输入：无<br>🖱️ 操作：点导出 .md<br>📤 输出：含编码簿、信度、频次的 .md</div><p class="mnote">方法论：内容分析(Krippendorff) · 主题分析六步(Braun & Clarke) · 编码者间信度 κ/α。</p></div></div></div>
 <footer><div class="container" data-i18n="foot">© 陈颖妍 · 骨架代码 · κ 计算已内置可用</div></footer>
 
 <script src="assets/wizard.js"></script>
@@ -88,6 +90,10 @@ new Wizard(cfg).mount('#app');
 <script>
 window.I18N_EN_TITLE = "Open-ended Response Coder";
 window.I18N_EN = {
+  manual_btn: "📖 Manual",
+  manual_title: "📖 Manual · Open-ended Response Coder",
+  manual_close: "Close ✕",
+  manual_body: `<p class="mintro">Semi-automatically induce categories from open-ended answers, code item by item, compute Cohen\u2019s κ inter-coder reliability, and export. Positioning: AI-assisted + human review — the human stays in the loop.</p><div class="step"><b>Step 1 · Import answers</b><br>🎯 Purpose: Load the answers to analyze<br>⌨️ Input: Open-ended answers, one per line<br>🖱️ How: Paste or type, one per line<br>📤 Output: Shows "loaded N units"</div><div class="step"><b>Step 2 · Question & unit</b><br>🎯 Purpose: Define the question and coding granularity<br>⌨️ Input: Research question; unit (whole/sentence/meaning)<br>🖱️ How: Fill question, pick unit granularity<br>📤 Output: Preview shows question & unit</div><div class="step"><b>Step 3 · Induce categories</b><br>🎯 Purpose: Build the labeling ruleset<br>⌨️ Input: Codebook: category|definition|example<br>🖱️ How: Define per line; keep MECE + an "Other"<br>📤 Output: Preview builds the codebook table</div><div class="step"><b>Step 4 · Code item by item</b><br>🎯 Purpose: Coder A labels each answer<br>⌨️ Input: Coder A: one category per line, aligned to answers<br>🖱️ How: Fill category names in answer order<br>📤 Output: Preview builds category frequency</div><div class="step"><b>Step 5 · Double-coding & κ ★</b><br>🎯 Purpose: Verify others can apply the codebook consistently<br>⌨️ Input: Coder B\u2019s independent coding<br>🖱️ How: Enter B\u2019s coding; κ is computed automatically<br>📤 Output: Shows N / agreement / κ (≥0.8 good, <0.6 recode)</div><div class="step"><b>Step 6 · Export</b><br>🎯 Purpose: Get archivable results<br>⌨️ Input: none<br>🖱️ How: Click Export .md<br>📤 Output: A .md with codebook, reliability, frequencies</div><p class="mnote">Methodology: content analysis (Krippendorff) · six-step thematic analysis (Braun & Clarke) · inter-coder reliability κ/α.</p>`,
   brand: "Open-ended Response Coder",
   back: "← Tools",
   th: "Open-ended Response Coder",
@@ -98,5 +104,6 @@ window.I18N_EN = {
 };
 </script>
 <script src="assets/i18n.js"></script>
+<script>(function(){var b=document.getElementById('manualBtn'),m=document.getElementById('manualMask'),c=document.getElementById('manualClose');if(!b||!m)return;function o(){m.classList.add('open');document.body.style.overflow='hidden';}function x(){m.classList.remove('open');document.body.style.overflow='';}b.addEventListener('click',o);c.addEventListener('click',x);m.addEventListener('click',function(e){if(e.target===m)x();});document.addEventListener('keydown',function(e){if(e.key==='Escape')x();});})();</script>
 </body>
 </html>

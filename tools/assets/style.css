@@ -122,3 +122,21 @@ code{background:#eef1f6;padding:1px 5px;border-radius:4px;font-size:12.5px}
 .langbtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 @keyframes langpulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}70%{box-shadow:0 0 0 11px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
 @media(max-width:860px){.langbtn{margin-left:auto}}
+
+
+/* ===== 操作手册按钮 + 弹窗 ===== */
+.manualbtn{-webkit-appearance:none;appearance:none;margin-left:8px;background:transparent;border:1.5px solid rgba(255,255,255,.55);color:#fff;font-size:13px;font-weight:600;padding:5px 12px;border-radius:999px;cursor:pointer;line-height:1;white-space:nowrap;transition:background .15s,color .15s}
+.manualbtn:hover{background:#fff;color:var(--zju)}
+.manual-mask{position:fixed;inset:0;background:rgba(0,20,50,.55);z-index:200;display:none;align-items:flex-start;justify-content:center;overflow:auto;padding:36px 14px}
+.manual-mask.open{display:flex}
+.manual-box{background:#fff;max-width:840px;width:100%;border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.32);overflow:hidden;margin-bottom:36px}
+.manual-box .mhead{position:sticky;top:0;background:var(--zju);color:#fff;padding:13px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px;z-index:1}
+.manual-box .mhead h3{margin:0;font-size:16px}
+.manual-box .mclose{-webkit-appearance:none;appearance:none;background:transparent;border:1.5px solid rgba(255,255,255,.6);color:#fff;border-radius:8px;cursor:pointer;padding:4px 12px;font-size:13px;white-space:nowrap}
+.manual-box .mclose:hover{background:#fff;color:var(--zju)}
+.manual-body{padding:20px 26px;font-size:13.5px;line-height:1.7;color:var(--ink)}
+.manual-body .mintro{color:var(--muted);margin:0 0 14px}
+.manual-body .step{border-left:3px solid var(--zju-3);background:#f6f9fd;padding:9px 14px;border-radius:0 8px 8px 0;margin:10px 0}
+.manual-body .step b{color:var(--zju)}
+.manual-body code{background:#eef4fc;padding:1px 6px;border-radius:5px}
+.manual-body .mnote{margin-top:14px;font-size:12.5px;color:var(--muted)}

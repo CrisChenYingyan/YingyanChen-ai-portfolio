@@ -11,6 +11,7 @@
   <span class="brand"><span class="dot"></span><span data-i18n="brand">SQL 妙妙小工具</span></span>
   <span class="spacer"></span>
   <a class="navlink" href="index.html" data-i18n="back">← 工具集</a>
+  <button id="manualBtn" class="manualbtn" type="button" data-i18n="manual_btn">📖 操作手册</button>
   <button id="langBtn" class="langbtn" type="button" aria-label="切换到英文 / Switch to English">EN</button>
 </div></nav>
 <div class="tool-head"><div class="container">
@@ -59,6 +60,7 @@
 
   <div class="callout warn" style="margin-top:18px" data-i18n="fallback"><b>降级预案：</b>若浏览器/网络无法加载 sql.js（WASM），本工具自动退回“仅生成 + 校验、可复制到本地执行”模式，并应在《网页作品集Todolist.docx》标记。</div>
 </main>
+<div class="manual-mask" id="manualMask" role="dialog" aria-modal="true"><div class="manual-box"><div class="mhead"><h3 data-i18n="manual_title">📖 操作手册 · SQL 妙妙小工具</h3><button class="mclose" id="manualClose" type="button" data-i18n="manual_close">关闭 ✕</button></div><div class="manual-body" data-i18n="manual_body"><p class="mintro">导入 CSV → 描述问题 → 生成/校验 SQL → 在浏览器里真的把 SQL 跑出来（sql.js/SQLite WASM），结果一键导出。数据只在本机、不上传。</p><div class="step"><b>第 1 步 · 导入 CSV</b><br>🎯 目的：把 CSV 变成可查询的表<br>⌨️ 输入：.csv/.txt 文件或粘贴的 CSV（首行为列名）<br>🖱️ 操作：上传或粘贴 → 点"导入建表"，建成表 data<br>📤 输出：提示"已建表 data(N 行，列…)"，记住最终列名</div><div class="step"><b>第 2 步 · 描述问题与输出</b><br>🎯 目的：想清楚算什么、结果文件叫什么<br>⌨️ 输入：自然语言问题 + 输出文件名<br>🖱️ 操作：两框各填一行（问题会喂给 AI 生成）<br>📤 输出：为后两步做准备</div><div class="step"><b>第 3 / 4 步 · 生成 & 校验 SQL</b><br>🎯 目的：得到一条针对表 data 的 SQL<br>⌨️ 输入：手写 SQL；或用 AI 按钮(需 API)<br>🖱️ 操作：手写 FROM data；或 ✨生成/🔍校验<br>📤 输出：SQL 框出现可执行草稿</div><div class="step"><b>第 5 步 · 浏览器内执行</b><br>🎯 目的：真正跑出结果并导出<br>⌨️ 输入：第 3/4 步的 SQL<br>🖱️ 操作：等"引擎已就绪"→点▶运行；报错则查表名(data)/列名/语法<br>📤 输出：结果表 + 可导出结果 CSV</div><p class="mnote">原理：sql.js 是编译成 WebAssembly 的 SQLite，数据库引擎跑在你浏览器里，故能真执行、无需后端。</p></div></div></div>
 <footer><div class="container" data-i18n="foot">© 陈颖妍 · 骨架代码 · sql.js 在浏览器内运行 SQLite</div></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
@@ -176,6 +178,10 @@ updateDynamic();
 <script>
 window.I18N_EN_TITLE = "SQL Handy Tool";
 window.I18N_EN = {
+  manual_btn: "📖 Manual",
+  manual_title: "📖 Manual · SQL Handy Tool",
+  manual_close: "Close ✕",
+  manual_body: `<p class="mintro">Import CSV → describe the question → generate/validate SQL → actually run it in the browser (sql.js / SQLite WASM) and export results. Data stays on your machine; nothing is uploaded.</p><div class="step"><b>Step 1 · Import CSV</b><br>🎯 Purpose: Turn CSV into a queryable table<br>⌨️ Input: A .csv/.txt file or pasted CSV (first row = header)<br>🖱️ How: Upload or paste → "Import & create table" builds table data<br>📤 Output: Shows "table data created"; note the final column names</div><div class="step"><b>Step 2 · Question & output</b><br>🎯 Purpose: Decide what to compute and the output filename<br>⌨️ Input: Natural-language question + output filename<br>🖱️ How: Fill both (the question feeds AI generation)<br>📤 Output: Prepares the next steps</div><div class="step"><b>Step 3/4 · Generate & validate SQL</b><br>🎯 Purpose: Get a SQL statement against table data<br>⌨️ Input: Hand-written SQL; or the AI buttons (need API)<br>🖱️ How: Write FROM data; or ✨generate / 🔍validate<br>📤 Output: An executable SQL draft appears</div><div class="step"><b>Step 5 · Run in the browser</b><br>🎯 Purpose: Actually run it and export<br>⌨️ Input: The SQL from step 3/4<br>🖱️ How: Wait for "engine ready" → ▶ Run; on error check table (data)/columns/syntax<br>📤 Output: A result table + exportable CSV</div><p class="mnote">How it works: sql.js is SQLite compiled to WebAssembly, so the DB engine runs in your browser — real execution, no backend.</p>`,
   brand: "SQL Handy Tool",
   back: "← Tools",
   th: "SQL Handy Tool",
@@ -202,5 +208,6 @@ window.I18N_EN = {
 };
 </script>
 <script src="assets/i18n.js"></script>
+<script>(function(){var b=document.getElementById('manualBtn'),m=document.getElementById('manualMask'),c=document.getElementById('manualClose');if(!b||!m)return;function o(){m.classList.add('open');document.body.style.overflow='hidden';}function x(){m.classList.remove('open');document.body.style.overflow='';}b.addEventListener('click',o);c.addEventListener('click',x);m.addEventListener('click',function(e){if(e.target===m)x();});document.addEventListener('keydown',function(e){if(e.key==='Escape')x();});})();</script>
 </body>
 </html>

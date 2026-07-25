@@ -11,6 +11,7 @@
   <span class="brand"><span class="dot"></span><span data-i18n="brand">PRD 生成器</span></span>
   <span class="spacer"></span>
   <a class="navlink" href="index.html" data-i18n="back">← 工具集</a>
+  <button id="manualBtn" class="manualbtn" type="button" data-i18n="manual_btn">📖 操作手册</button>
   <button id="langBtn" class="langbtn" type="button" aria-label="切换到英文 / Switch to English">EN</button>
 </div></nav>
 <div class="tool-head"><div class="container">
@@ -18,6 +19,7 @@
   <p data-i18n="sub">依据《PRD写作指导.md》9 章框架 + 语言规范；风格层：通用 / 阿里 / 腾讯</p>
 </div></div>
 <main class="container"><div id="app"></div></main>
+<div class="manual-mask" id="manualMask" role="dialog" aria-modal="true"><div class="manual-box"><div class="mhead"><h3 data-i18n="manual_title">📖 操作手册 · PRD 生成器</h3><button class="mclose" id="manualClose" type="button" data-i18n="manual_close">关闭 ✕</button></div><div class="manual-body" data-i18n="manual_body"><p class="mintro">手把手按 9 章框架填写，边填边提示"目标要可量化 / 补验收标准 / 加边界异常"，右侧实时生成、一键导出一份格式规范的 PRD。</p><div class="step"><b>第 0 章 · 文档信息</b><br>🎯 目的：登记基本信息并选定写作风格<br>⌨️ 输入：产品/需求名、作者/版本、风格层<br>🖱️ 操作：填名称作者；风格三选一（通用/阿里/腾讯）<br>📤 输出：预览抬头出现文档信息</div><div class="step"><b>第 1 章 · 项目概述</b><br>🎯 目的：讲清为什么做、做到什么算成功<br>⌨️ 输入：背景、目标(可量化)、非目标、指标、参与人<br>🖱️ 操作：目标含"提升"却无数字会红字警告<br>📤 输出：预览"1. 项目概述"</div><div class="step"><b>第 2 章 · 需求范围</b><br>🎯 目的：划边界，防止范围蔓延<br>⌨️ 输入：In Scope / Out of Scope / 依赖假设<br>🖱️ 操作：每行一条；Out of Scope 不填会提示<br>📤 输出：预览"2. 需求范围"</div><div class="step"><b>第 3 章 · 用户与场景</b><br>🎯 目的：明确为谁做、什么场景用<br>⌨️ 输入：用户画像、用户故事<br>🖱️ 操作：用户故事按"作为__想要__以便__"，缺"以便"会提示<br>📤 输出：预览"3. 用户与场景"</div><div class="step"><b>第 4 章 · 功能需求 ★</b><br>🎯 目的：把功能写到可开发、可验收<br>⌨️ 输入：功能清单(名|优先级)、某功能详述<br>🖱️ 操作：详述缺"验收标准/边界异常"会红字提示<br>📤 输出：预览生成功能表 + 详述代码块</div><div class="step"><b>第 5 章 · 非功能需求</b><br>🎯 目的：补齐性能、安全、兼容硬约束<br>⌨️ 输入：性能(给数字)、安全/合规、兼容性<br>🖱️ 操作：含主观词却无数字会提示改成可测<br>📤 输出：预览"5. 非功能需求"</div><div class="step"><b>第 6 章 · 数据与埋点</b><br>🎯 目的：定义如何用数据验证目标<br>⌨️ 输入：埋点(事件|时机|字段)、评估方式<br>🖱️ 操作：埋点每行一条<br>📤 输出：预览"6. 数据与埋点"</div><div class="step"><b>第 7 章 · 发布与里程碑</b><br>🎯 目的：讲清怎么上线、出问题怎么退<br>⌨️ 输入：排期、发布策略(全量/灰度)、回滚<br>🖱️ 操作：回滚不填会提示"验收+数据+回滚=闭环"<br>📤 输出：预览"7. 发布与里程碑"</div><div class="step"><b>第 8 章 · 附录 & 终审</b><br>🎯 目的：收口 TBD、对照自检、导出成品<br>⌨️ 输入：待定项、自检清单(勾选)<br>🖱️ 操作：勾选清单后点导出 .md<br>📤 输出：一份完整的 Markdown PRD</div><p class="mnote">框架与校验来自《PRD写作指导.md》：目标可量化 + 每功能有验收标准与边界异常。</p></div></div></div>
 <footer><div class="container" data-i18n="foot">© 陈颖妍 · 骨架代码 · 校验规则来自 PRD写作指导.md 第 3 节</div></footer>
 
 <script src="assets/wizard.js"></script>
@@ -118,6 +120,10 @@ new Wizard(cfg).mount('#app');
 <script>
 window.I18N_EN_TITLE = "PRD Generator";
 window.I18N_EN = {
+  manual_btn: "📖 Manual",
+  manual_title: "📖 Manual · PRD Generator",
+  manual_close: "Close ✕",
+  manual_body: `<p class="mintro">A guided 9-chapter framework with live prompts (measurable goals / acceptance criteria / edge cases), a live preview on the right, and one-click export of a well-formatted PRD.</p><div class="step"><b>Ch.0 · Document info</b><br>🎯 Purpose: Record basics and choose a writing style<br>⌨️ Input: Name, author/version, style preset<br>🖱️ How: Fill name & author; pick a style (Generic/Alibaba/Tencent)<br>📤 Output: Preview header shows document info</div><div class="step"><b>Ch.1 · Overview</b><br>🎯 Purpose: State why, and what counts as success<br>⌨️ Input: Background, measurable goal, non-goals, metric, stakeholders<br>🖱️ How: A goal with "improve" but no number triggers a red warning<br>📤 Output: Preview "1. Overview"</div><div class="step"><b>Ch.2 · Scope</b><br>🎯 Purpose: Draw boundaries to prevent scope creep<br>⌨️ Input: In scope / out of scope / dependencies<br>🖱️ How: One per line; empty out-of-scope is flagged<br>📤 Output: Preview "2. Scope"</div><div class="step"><b>Ch.3 · Users & scenarios</b><br>🎯 Purpose: Clarify who and in what scenario<br>⌨️ Input: Persona, user stories<br>🖱️ How: User stories as "As __ I want __ so that __"; missing "so that" is flagged<br>📤 Output: Preview "3. Users & scenarios"</div><div class="step"><b>Ch.4 · Functional requirements ★</b><br>🎯 Purpose: Make features developable and acceptance-testable<br>⌨️ Input: Feature list (name|priority), one feature in detail<br>🖱️ How: Missing acceptance/edge-cases triggers a red warning<br>📤 Output: Preview builds a feature table + detail block</div><div class="step"><b>Ch.5 · Non-functional</b><br>🎯 Purpose: Add performance, security, compatibility<br>⌨️ Input: Performance (numbers), security, compatibility<br>🖱️ How: Subjective words without numbers get flagged<br>📤 Output: Preview "5. Non-functional"</div><div class="step"><b>Ch.6 · Data & tracking</b><br>🎯 Purpose: Define how data validates the goal<br>⌨️ Input: Tracking (event|trigger|fields), evaluation<br>🖱️ How: One tracking line each<br>📤 Output: Preview "6. Data & tracking"</div><div class="step"><b>Ch.7 · Release & milestones</b><br>🎯 Purpose: State how to launch and how to roll back<br>⌨️ Input: Schedule, release (full/canary), rollback<br>🖱️ How: Empty rollback is flagged as an open loop<br>📤 Output: Preview "7. Release & milestones"</div><div class="step"><b>Ch.8 · Appendix & review</b><br>🎯 Purpose: Close TBDs, self-review, export<br>⌨️ Input: TBD items, self-review checklist<br>🖱️ How: Tick the checklist, then Export .md<br>📤 Output: A complete Markdown PRD</div><p class="mnote">Framework and checks come from the PRD-writing guide: measurable goals + acceptance criteria & edge cases per feature.</p>`,
   brand: "PRD Generator",
   back: "← Tools",
   th: "PRD Generator",
@@ -127,5 +133,6 @@ window.I18N_EN = {
 };
 </script>
 <script src="assets/i18n.js"></script>
+<script>(function(){var b=document.getElementById('manualBtn'),m=document.getElementById('manualMask'),c=document.getElementById('manualClose');if(!b||!m)return;function o(){m.classList.add('open');document.body.style.overflow='hidden';}function x(){m.classList.remove('open');document.body.style.overflow='';}b.addEventListener('click',o);c.addEventListener('click',x);m.addEventListener('click',function(e){if(e.target===m)x();});document.addEventListener('keydown',function(e){if(e.key==='Escape')x();});})();</script>
 </body>
 </html>
